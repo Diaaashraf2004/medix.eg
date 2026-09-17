@@ -551,9 +551,9 @@ function renderFooter() {
             </div>
             <p class="footer-text">${escapeHtml(aboutText)}</p>
             <div class="footer-social">
-              ${settings.socialFacebook ? `<a href="${settings.socialFacebook}" target="_blank" title="Facebook"><i class="ph ph-facebook-logo"></i></a>` : ''}
-              ${settings.socialInstagram ? `<a href="${settings.socialInstagram}" target="_blank" title="Instagram"><i class="ph ph-instagram-logo"></i></a>` : ''}
-              ${settings.contactWhatsapp ? `<a href="https://wa.me/${settings.contactWhatsapp.replace(/\+/g, '')}" target="_blank" title="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>` : ''}
+              <a href="#" title="Facebook"><i class="ph ph-facebook-logo"></i></a>
+              <a href="#" title="Instagram"><i class="ph ph-instagram-logo"></i></a>
+              <a href="#" title="WhatsApp"><i class="ph ph-whatsapp-logo"></i></a>
             </div>
           </div>
           <div class="footer-col">
@@ -781,8 +781,6 @@ function renderProductCard(product) {
   const settings = Store.getSettings();
   const hasDiscount = product.discountPercentage > 0;
   const outOfStock = product.stock <= 0;
-  const hasOptions = (product.colors && product.colors.length > 0) || (product.sizes && product.sizes.length > 0);
-  const cartAction = hasOptions ? 'quick-view' : 'add-to-cart';
 
   const discountLabel = lang === 'ar'
     ? `${t('common.off')} ${product.discountPercentage}%`
@@ -813,85 +811,24 @@ function renderProductCard(product) {
           </div>
         ` : ''}
         <div class="product-card-footer" style="flex-direction: column; align-items: stretch; gap: 8px;">
-          <div class="price-group ${hasDiscount ? 'has-discount' : ''}" style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+          <div class="price-group ${hasDiscount ? 'has-discount' : ''}">
             <span class="price-current">${formatPrice(discountedPrice)}</span>
-            ${hasDiscount ? `
-              <span class="price-original">${formatPrice(product.price)}</span>
-              <span class="price-saved" style="color: var(--success); font-weight: 700; font-size: 16px;">
-                ${lang === 'ar' ? 'وفرت' : 'You saved'} ${formatPrice(product.price - discountedPrice)}
-              </span>
-            ` : ''}
+            ${hasDiscount ? `<span class="price-original">${formatPrice(product.price)}</span>` : ''}
           </div>
           <div style="display: flex; gap: 6px;">
-            <button class="btn btn-primary btn-buy-now btn-sm" style="flex: 1; padding: 9px 8px; font-size: 0.95rem;" data-action="go-product" data-product-id="${product.id}" ${outOfStock ? 'disabled' : ''}>
-               <i class="ph ph-bag-simple"></i> ${outOfStock ? t('product.outOfStock') : (lang === 'ar' ? 'اشتري الآن' : 'Buy Now')}
+            <button class="btn btn-primary btn-sm" style="flex: 1; padding: 8px 6px; font-weight: bold; font-size: 0.95rem;" data-action="buy-now" data-product-id="${product.id}" ${outOfStock ? 'disabled' : ''}>
+               ${outOfStock ? t('product.outOfStock') : (lang === 'ar' ? 'شراء سريع' : 'Buy Now')}
             </button>
-            <button class="btn btn-secondary btn-sm" style="padding: 8px 12px; font-size: 1.1rem;" data-action="${cartAction}" data-product-id="${product.id}" ${outOfStock ? 'disabled' : ''} title="${t('product.addToCart')}">
+            <button class="btn btn-secondary btn-sm" style="padding: 8px 12px; font-size: 1.1rem;" data-action="add-to-cart" data-product-id="${product.id}" ${outOfStock ? 'disabled' : ''} title="${t('product.addToCart')}">
               <i class="ph ph-shopping-cart"></i>
             </button>
-            <a href="https://wa.me/${(settings.contactWhatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent('أريد الاستفسار عن هذا المنتج: ' + getProductName(product))}" target="_blank" class="btn btn-sm" style="background-color: #25D366; color: white; border: none; padding: 8px 12px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;" title="WhatsApp" data-action="whatsapp">
+            <a href="https://wa.me/${(settings.contactWhatsapp || '').replace(/\D/g, '')}?text=${encodeURIComponent('أريد الاستفسار عن المنتج: ' + getProductName(product))}" target="_blank" class="btn btn-sm" style="background-color: #25D366; color: white; border: none; padding: 8px 12px; font-size: 1.1rem; display: flex; align-items: center; justify-content: center;" title="WhatsApp" onclick="event.stopPropagation();">
               <i class="ph ph-whatsapp-logo"></i>
             </a>
           </div>
         </div>
       </div>
     </article>
-  `;
-}
-
-// --- Quick View Modal ---
-function renderQuickView(productId) {
-  const product = Store.getProduct(productId);
-  if (!product) return '';
-  const lang = getLang();
-  
-  return `
-    <div class="quick-view-container" style="display:flex; flex-direction:column; gap:15px; text-align: ${lang==='ar'?'right':'left'};">
-      <div style="display:flex; gap:15px; align-items:flex-start;">
-        <img src="${product.images?.[0] || 'https://via.placeholder.com/150'}" style="width:100px; height:100px; object-fit:cover; border-radius:var(--radius-sm);">
-        <div>
-          <h3 style="margin-bottom:5px; font-size:1.1rem;">${escapeHtml(getProductName(product))}</h3>
-          <div style="font-weight:bold; color:var(--primary); font-size:1.2rem;">${formatPrice(Store.getProductPrice(product))}</div>
-        </div>
-      </div>
-      
-      ${(product.colors && product.colors.length > 0) ? `
-        <div style="margin-bottom:5px;">
-          <div style="margin-bottom:8px; font-weight:600; font-size:0.95rem;">${lang === 'ar' ? 'اللون:' : 'Color:'} <span id="quick-color-name" style="color:var(--text-light);font-weight:normal;"></span></div>
-          <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            ${product.colors.map(c => `
-              <button class="quick-color-swatch" data-action="quick-select-color" data-color-ar="${escapeHtml(c.name_ar)}" data-color-en="${escapeHtml(c.name_en)}" style="background-color: ${c.hex}; width:32px; height:32px; border-radius:50%; border:2px solid var(--border); cursor:pointer;" title="${escapeHtml(lang === 'ar' ? c.name_ar : c.name_en)}"></button>
-            `).join('')}
-          </div>
-        </div>
-      ` : ''}
-
-      ${(product.sizes && product.sizes.length > 0) ? `
-        <div style="margin-bottom:5px;">
-          <div style="margin-bottom:8px; font-weight:600; font-size:0.95rem;">${lang === 'ar' ? 'المقاس:' : 'Size:'} <span id="quick-size-name" style="color:var(--text-light);font-weight:normal;"></span></div>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            ${product.sizes.map(s => `
-              <button class="quick-size-swatch" data-action="quick-select-size" data-size="${escapeHtml(s)}" style="padding:6px 12px; border:1px solid var(--border); border-radius:4px; background:var(--bg-card); cursor:pointer; font-weight:bold;">${escapeHtml(s)}</button>
-            `).join('')}
-          </div>
-        </div>
-      ` : ''}
-      
-      <div id="quick-variant-error" style="color: var(--danger); font-size: 13px; margin-bottom: 5px; display: none; font-weight:600;">
-        ${lang === 'ar' ? 'برجاء اختيار اللون والمقاس أولاً' : 'Please select color and size first'}
-      </div>
-
-      <div style="display:flex; gap:10px; margin-top:10px;">
-        <div style="display:flex; align-items:center; border:1px solid var(--border); border-radius:var(--radius-sm); overflow:hidden; background:var(--bg-card);">
-          <button data-action="quick-qty-minus" style="padding:12px 15px; border:none; background:transparent; cursor:pointer; font-size:1.1rem;">-</button>
-          <span id="quick-qty-value" style="padding:0 10px; font-weight:bold;">1</span>
-          <button data-action="quick-qty-plus" style="padding:12px 15px; border:none; background:transparent; cursor:pointer; font-size:1.1rem;">+</button>
-        </div>
-        <button class="btn btn-primary" style="flex:1; font-weight:bold; font-size:1.05rem;" data-action="quick-add-to-cart" data-product-id="${product.id}">
-          <i class="ph ph-shopping-cart"></i> ${lang === 'ar' ? 'إضافة للسلة' : 'Add to Cart'}
-        </button>
-      </div>
-    </div>
   `;
 }
 
@@ -956,12 +893,12 @@ function renderHomePage() {
       <div class="section-header">
         <h2 class="section-title">${t('home.categories')}</h2>
       </div>
-      <div class="categories-grid">
+      <!-- 2. Categories Circles -->
+      <div class="categories-scroll">
         ${categories.map(cat => `
-          <a href="#/category/${cat.id}" class="category-card">
-            <span class="category-icon">${cat.icon || '📦'}</span>
-            <span class="category-name">${escapeHtml(getCategoryName(cat))}</span>
-            <span class="category-count">${Store.getProductsByCategory(cat.id).length} ${t('common.products')}</span>
+          <a href="#/category/${cat.id}" class="cat-circle-wrap">
+            ${cat.image ? `<div class="cat-circle" style="background-image: url('${cat.image}');"></div>` : `<div class="cat-circle" style="font-size:30px;">${cat.icon || '📦'}</div>`}
+            <span>${escapeHtml(getCategoryName(cat))}</span>
           </a>
         `).join('')}
       </div>
@@ -1228,14 +1165,9 @@ function renderProductDetailPage(productId) {
               <span class="rating-count">(${product.ratingCount} ${t('product.reviews')})</span>
             </div>
 
-            <div class="product-detail-price ${hasDiscount ? 'has-discount' : ''}" style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+            <div class="product-detail-price ${hasDiscount ? 'has-discount' : ''}">
               <span class="price-current">${formatPrice(discountedPrice)}</span>
-              ${hasDiscount ? `
-                <span class="price-original">${formatPrice(product.price)}</span>
-                <span class="price-saved" style="color: var(--success); font-weight: 700; font-size: 16px;">
-                  ${lang === 'ar' ? 'وفرت' : 'You saved'} ${formatPrice(product.price - discountedPrice)}
-                </span>
-              ` : ''}
+              ${hasDiscount ? `<span class="price-original">${formatPrice(product.price)}</span>` : ''}
             </div>
 
             ${(product.showScarcityBadge !== false && product.stock > 0 && product.stock <= (product.scarcityThreshold ?? 5)) ? `
@@ -1287,8 +1219,8 @@ function renderProductDetailPage(productId) {
                 <button class="qty-btn" data-action="detail-qty-increase" id="detail-qty-plus"><i class="ph ph-plus"></i></button>
               </div>
               <div style="display: flex; gap: 12px; flex: 1;">
-                <button class="btn btn-primary btn-buy-now btn-lg" style="flex: 1;" data-action="detail-buy-now" data-product-id="${product.id}" ${outOfStock ? 'disabled' : ''}>
-                  <i class="ph ph-lightning" style="font-size: 1.2rem;"></i> ${outOfStock ? t('product.outOfStock') : (lang === 'ar' ? 'اشتري الآن' : 'Buy Now')}
+                <button class="btn btn-primary btn-lg" style="flex: 1;" data-action="detail-buy-now" data-product-id="${product.id}" ${outOfStock ? 'disabled' : ''}>
+                  ${outOfStock ? t('product.outOfStock') : (lang === 'ar' ? 'شراء سريع' : 'Buy Now')}
                 </button>
                 <button class="btn btn-secondary btn-lg" data-action="detail-add-to-cart" data-product-id="${product.id}" id="btn-add-to-cart" ${outOfStock ? 'disabled' : ''} title="${t('product.addToCart')}">
                   <i class="ph ph-shopping-cart"></i>
@@ -1486,6 +1418,10 @@ function renderCheckoutPage() {
               <div class="form-group">
                 <label class="form-label" for="checkout-phone">${t('checkout.phone')} *</label>
                 <input type="tel" class="form-input" id="checkout-phone" value="${escapeHtml(defPhone)}" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="checkout-email">${t('checkout.email')}</label>
+                <input type="email" class="form-input" id="checkout-email" value="${escapeHtml(defEmail)}">
               </div>
 
               <h3 class="mb-3 mt-4">${t('checkout.shippingInfo')}</h3>
@@ -2215,90 +2151,6 @@ document.addEventListener('click', (e) => {
       e.preventDefault();
       navigateTo(`#/product/${productId}`);
       break;
-      
-    case 'whatsapp':
-      // Let the browser handle the href, just prevent the card's action
-      e.stopPropagation();
-      break;
-
-    // Quick View
-    case 'quick-view': {
-      e.preventDefault();
-      e.stopPropagation();
-      showModal(getLang() === 'ar' ? 'اختر التفاصيل' : 'Select Options', renderQuickView(productId));
-      break;
-    }
-    
-    case 'quick-select-color': {
-      document.querySelectorAll('.quick-color-swatch').forEach(btn => btn.classList.remove('selected'));
-      target.classList.add('selected');
-      // Fix styling of selected swatch
-      document.querySelectorAll('.quick-color-swatch').forEach(btn => btn.style.border = '2px solid var(--border)');
-      target.style.border = '2px solid var(--primary)';
-      const nameSpan = document.getElementById('quick-color-name');
-      if (nameSpan) {
-        nameSpan.textContent = getLang() === 'ar' ? target.dataset.colorAr : target.dataset.colorEn;
-      }
-      break;
-    }
-    case 'quick-select-size': {
-      document.querySelectorAll('.quick-size-swatch').forEach(btn => {
-        btn.classList.remove('selected');
-        btn.style.borderColor = 'var(--border)';
-        btn.style.color = 'var(--text)';
-      });
-      target.classList.add('selected');
-      target.style.borderColor = 'var(--primary)';
-      target.style.color = 'var(--primary)';
-      const nameSpan = document.getElementById('quick-size-name');
-      if (nameSpan) {
-        nameSpan.textContent = target.dataset.size;
-      }
-      break;
-    }
-    case 'quick-qty-minus': {
-      const valEl = document.getElementById('quick-qty-value');
-      let val = parseInt(valEl.textContent) || 1;
-      if (val > 1) valEl.textContent = val - 1;
-      break;
-    }
-    case 'quick-qty-plus': {
-      const valEl = document.getElementById('quick-qty-value');
-      let val = parseInt(valEl.textContent) || 1;
-      valEl.textContent = val + 1;
-      break;
-    }
-    case 'quick-add-to-cart': {
-      let selectedColor = null;
-      let selectedSize = null;
-      const product = Store.getProduct(productId);
-      
-      if (product.colors && product.colors.length > 0) {
-        const selectedBtn = document.querySelector('.quick-color-swatch.selected');
-        if (!selectedBtn) {
-          document.getElementById('quick-variant-error').style.display = 'block';
-          return;
-        }
-        selectedColor = getLang() === 'ar' ? selectedBtn.dataset.colorAr : selectedBtn.dataset.colorEn;
-      }
-      if (product.sizes && product.sizes.length > 0) {
-        const selectedBtn = document.querySelector('.quick-size-swatch.selected');
-        if (!selectedBtn) {
-          document.getElementById('quick-variant-error').style.display = 'block';
-          return;
-        }
-        selectedSize = selectedBtn.dataset.size;
-      }
-
-      const qty = parseInt(document.getElementById('quick-qty-value')?.textContent) || 1;
-      
-      if (Store.addToCart(productId, qty, { color: selectedColor, size: selectedSize })) {
-        closeModal();
-        showToast(t('product.added'), 'success');
-        openCartSidebar();
-      }
-      break;
-    }
 
     // Cart
     case 'buy-now':
@@ -2641,13 +2493,13 @@ document.addEventListener('click', (e) => {
 });
 
 // Form Submissions
-document.addEventListener('submit', async (e) => {
+document.addEventListener('submit', (e) => {
   if (e.target.id === 'login-form') {
     e.preventDefault();
     const email = document.getElementById('login-email').value.trim();
     const password = document.getElementById('login-password').value;
     
-    const res = await Store.loginCustomer(email, password);
+    const res = Store.loginCustomer(email, password);
     if (res.success) {
       showToast(t('auth.loginSuccess'), 'success');
       navigateTo('#/profile');
@@ -2663,7 +2515,7 @@ document.addEventListener('submit', async (e) => {
     const email = document.getElementById('reg-email').value.trim();
     const password = document.getElementById('reg-password').value;
     
-    const res = await Store.registerCustomer({ name, phone, email, password });
+    const res = Store.registerCustomer({ name, phone, email, password });
     if (res.success) {
       showToast(t('auth.registerSuccess'), 'success');
       navigateTo('#/profile');
@@ -2751,10 +2603,10 @@ document.addEventListener('keydown', (e) => {
 // ============================================
 // Order Placement
 // ============================================
-async function handlePlaceOrder() {
+function handlePlaceOrder() {
   const name = document.getElementById('checkout-name')?.value?.trim();
   const phone = document.getElementById('checkout-phone')?.value?.trim();
-  const email = ''; // Email field was removed
+  const email = document.getElementById('checkout-email')?.value?.trim();
   const city = document.getElementById('checkout-city')?.value?.trim();
   const address = document.getElementById('checkout-address')?.value?.trim();
   const notes = document.getElementById('checkout-notes')?.value?.trim();
@@ -2778,27 +2630,18 @@ async function handlePlaceOrder() {
     return;
   }
 
-  // Show loading state
-  const btn = document.getElementById('btn-place-order');
-  const originalBtnText = btn ? btn.innerHTML : '';
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = `<i class="ph ph-spinner ph-spin"></i> ${getLang() === 'ar' ? 'جاري إرسال الطلب...' : 'Sending Order...'}`;
-  }
+  const order = Store.createOrder({
+    customerName: name,
+    customerPhone: phone,
+    customerEmail: email,
+    city: city,
+    customerAddress: address,
+    notes: notes,
+    couponCode: currentCouponCode,
+    discountAmount: currentDiscountAmount
+  });
 
-  try {
-    const order = await Store.createOrder({
-      customerName: name,
-      customerPhone: phone,
-      customerEmail: email,
-      city: city,
-      customerAddress: address,
-      notes: notes,
-      couponCode: currentCouponCode,
-      discountAmount: currentDiscountAmount
-    });
-
-    if (order) {
+  if (order) {
     // Send email via emailjs if configured
     const settings = Store.getSettings();
     if (window.emailjs && settings.emailjs_service_id && settings.emailjs_template_id && settings.emailjs_public_key) {
@@ -2846,17 +2689,6 @@ async function handlePlaceOrder() {
     navigateTo(`#/order-success/${order.orderNumber}`);
   } else {
     showToast(t('checkout.emptyCart'), 'error');
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = originalBtnText;
-    }
-  }
-  } catch (error) {
-    console.error("Order error:", error);
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = originalBtnText;
-    }
   }
 }
 
@@ -3080,8 +2912,8 @@ if (window.FirebaseDB && window.FirebaseDB.db) {
   init();
   // Always wait for Firebase to ensure cloud data is priority
   window.addEventListener('firebase-initial-sync-done', revealOnce);
-  // Safety timeout: max 8 seconds, after which it reveals whatever is there
-  setTimeout(revealOnce, 8000);
+  // Safety timeout: max 5 seconds, after which it reveals whatever is there
+  setTimeout(revealOnce, 5000);
 } else {
   // No Firebase at all
   init();

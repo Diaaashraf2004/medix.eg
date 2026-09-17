@@ -29,10 +29,10 @@
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 20px;
-  --font-heading: 'Alexandria', sans-serif;
-  --font-body: 'Alexandria', sans-serif;
-  --font-ar-heading: 'Alexandria', sans-serif;
-  --font-ar-body: 'Alexandria', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-ar-heading: 'Tajawal', sans-serif;
+  --font-ar-body: 'Cairo', sans-serif;
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --nav-height: 0px;
   --sidebar-width: 260px;

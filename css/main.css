@@ -32,10 +32,10 @@
   --radius-md: 12px;
   --radius-lg: 20px;
   --radius-xl: 28px;
-  --font-heading: 'Alexandria', sans-serif;
-  --font-body: 'Alexandria', sans-serif;
-  --font-ar-heading: 'Alexandria', sans-serif;
-  --font-ar-body: 'Alexandria', sans-serif;
+  --font-heading: 'Playfair Display', serif;
+  --font-body: 'Inter', sans-serif;
+  --font-ar-heading: 'Tajawal', sans-serif;
+  --font-ar-body: 'Cairo', sans-serif;
   --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   --nav-height: 72px;
   --max-width: 1400px;
@@ -203,59 +203,6 @@ p {
   background: var(--accent-hover);
   box-shadow: var(--accent-glow);
   transform: translateY(-1px);
-}
-
-/* ===== BUY NOW BUTTON STYLES (ON ACTION & ON HOVER STATES) ===== */
-.btn-buy-now {
-  background: var(--accent) !important;
-  color: #0a0a0f !important;
-  font-weight: 700 !important;
-  border: none !important;
-  border-radius: var(--radius-md) !important;
-  box-shadow: 0 4px 14px rgba(201, 160, 78, 0.3) !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-  position: relative !important;
-  overflow: hidden !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 6px !important;
-  cursor: pointer !important;
-}
-
-/* HOVER STATE (ON HOVER ACTION) */
-.btn-buy-now:hover:not(:disabled) {
-  background: #ddb35e !important;
-  transform: translateY(-2px) scale(1.03) !important;
-  box-shadow: 0 8px 24px rgba(201, 160, 78, 0.5) !important;
-}
-
-/* ACTIVE / PRESS STATE */
-.btn-buy-now:active:not(:disabled) {
-  transform: translateY(0) scale(0.97) !important;
-  box-shadow: 0 2px 8px rgba(201, 160, 78, 0.3) !important;
-}
-
-/* GLOW SHINE EFFECT ON HOVER */
-.btn-buy-now::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    60deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 70%
-  );
-  transform: rotate(30deg) translateX(-100%);
-  transition: transform 0.6s ease;
-}
-
-.btn-buy-now:hover::after {
-  transform: rotate(30deg) translateX(100%);
 }
 
 .btn-secondary {
@@ -522,7 +469,7 @@ html[dir="rtl"] .discount-badge {
 /* ===== PRICE DISPLAY ===== */
 .price-current {
   font-weight: 700;
-  color: #1B2A47; /* Elegant Dark Navy color */
+  color: var(--accent);
   font-size: 1.15rem;
 }
 
@@ -534,7 +481,7 @@ html[dir="rtl"] .discount-badge {
 }
 
 .has-discount .price-current {
-  color: #1B2A47; /* Dark Navy color for prices */
+  color: #d93838; /* Prominent red color for discounted price */
 }
 
 .price-group {
@@ -1028,128 +975,6 @@ html[dir="rtl"] .hero-title {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 20px;
-}
-
-/* 2. Categories 2-Frame Grid (6 Columns each in 12-col system) */
-.categories-grid-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
-  margin-bottom: 50px;
-}
-
-.category-frame-card {
-  position: relative;
-  height: 225px;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  text-decoration: none;
-  display: flex;
-  align-items: flex-end;
-  padding: 24px;
-  box-shadow: var(--shadow);
-  border: 1px solid var(--border);
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease, border-color 0.4s ease;
-  background: var(--bg-card);
-}
-
-.category-frame-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(201, 160, 78, 0.2);
-  border-color: var(--accent);
-}
-
-.category-frame-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  transition: transform 0.6s ease;
-  z-index: 1;
-}
-
-.category-frame-card:hover .category-frame-image {
-  transform: scale(1.06);
-}
-
-.category-frame-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(10, 10, 15, 0.85) 100%);
-  z-index: 2;
-  transition: background 0.4s ease;
-}
-
-.category-frame-card:hover .category-frame-overlay {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.25) 0%, rgba(10, 10, 15, 0.92) 100%);
-}
-
-.category-frame-content {
-  position: relative;
-  z-index: 3;
-  width: 100%;
-  color: var(--text-primary);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.category-frame-icon {
-  font-size: 1.5rem;
-  margin-bottom: 2px;
-}
-
-.category-frame-title {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: #ffffff !important;
-  margin: 0;
-  text-shadow: 0 2px 8px rgba(0,0,0,0.8);
-}
-
-.category-frame-action {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #ffffff !important;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-  transition: transform 0.3s ease, opacity 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  opacity: 0.95;
-}
-
-.category-frame-card:hover .category-frame-action {
-  transform: translateX(-6px);
-  opacity: 1;
-}
-
-html[dir="ltr"] .category-frame-card:hover .category-frame-action {
-  transform: translateX(6px);
-}
-
-@media (max-width: 768px) {
-  .categories-grid-container {
-    gap: 12px;
-    margin-bottom: 35px;
-  }
-  .category-frame-card {
-    height: 160px;
-    padding: 16px;
-    border-radius: var(--radius-md);
-  }
-  .category-frame-title {
-    font-size: 1.3rem;
-  }
-  .category-frame-action {
-    font-size: 0.9rem;
-  }
 }
 
 /* 2. Categories Circles */

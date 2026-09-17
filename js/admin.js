@@ -1041,7 +1041,7 @@ function renderCategories() {
               categories.map(c => `
                 <tr>
                   <td>
-                    <div style="width:40px;height:40px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:20px;">${c.icon || '<i class="ph ph-folder"></i>'}</div>
+                    ${c.image ? `<img src="${c.image}" alt="Category" style="width:40px;height:40px;border-radius:50%;object-fit:cover;">` : `<div style="width:40px;height:40px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:20px;">${c.icon || '<i class="ph ph-folder"></i>'}</div>`}
                   </td>
                   <td>${c.name_ar}</td>
                   <td>${c.name_en}</td>
@@ -1066,7 +1066,6 @@ function renderCategories() {
 function openCategoryModal(category = null) {
   const isEdit = !!category;
   const title = isEdit ? t('admin.editCategory') : t('admin.addCategory');
-  const currentImg = category?.image || category?.icon || '';
 
   const body = `
     <form class="admin-form" id="category-form">
@@ -1078,9 +1077,25 @@ function openCategoryModal(category = null) {
         <label for="cat-name-en">${t('admin.categoryName_en')} *</label>
         <input type="text" id="cat-name-en" value="${category?.name_en || ''}" required>
       </div>
-      <div class="form-group">
-        <label for="cat-icon">${t('admin.icon')}</label>
-        <input type="text" id="cat-icon" value="${currentImg}" placeholder="👕">
+      <div class="form-group full-width">
+        <label>${t('admin.icon')} (${currentLang === 'ar' ? 'صورة التصنيف' : 'Category Image'})</label>
+        <div style="display:flex; gap:8px; margin-bottom:8px;">
+          <input type="text" id="cat-icon-url-input" placeholder="${currentLang === 'ar' ? 'الصق رابط الصورة هنا (https://...)' : 'Paste image URL here (https://...)'}" style="flex:1;">
+          <button type="button" class="btn btn-secondary" id="btn-set-cat-image" style="white-space:nowrap;">
+            <i class="ph ph-check"></i> ${currentLang === 'ar' ? 'تطبيق' : 'Apply'}
+          </button>
+        </div>
+        <p style="font-size:11px; color:var(--text-muted); margin-bottom:8px; margin-top:-4px;">
+          ${currentLang === 'ar' ? '💡 ارفع الصورة على <a href="https://imgbb.com" target="_blank" style="color:var(--accent);">imgbb.com</a> ثم الصق الرابط' : '💡 Upload to <a href="https://imgbb.com" target="_blank" style="color:var(--accent);">imgbb.com</a> then paste the URL'}
+        </p>
+        <input type="hidden" id="cat-icon" value="${category?.image || category?.icon || ''}">
+        <div class="image-preview-grid" id="cat-img-preview">
+          ${(category?.image || category?.icon) ? `
+            <div class="image-preview-item" style="width:80px;height:80px;">
+              <img src="${category.image || category.icon}" alt="Preview" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+            </div>
+          ` : ''}
+        </div>
       </div>
       <div class="form-group">
         <label for="cat-order">${t('admin.order')}</label>
@@ -1103,6 +1118,28 @@ function openCategoryModal(category = null) {
 
   openModal(title, body, footer);
 
+  // Handle URL input for category image
+  const catIconUrlInput = document.getElementById('cat-icon-url-input');
+  const setCatImgBtn = document.getElementById('btn-set-cat-image');
+  const catIconHidden = document.getElementById('cat-icon');
+  const catImgPreview = document.getElementById('cat-img-preview');
+  
+  const applyCatImage = () => {
+    const url = catIconUrlInput?.value?.trim() || catIconHidden?.value?.trim() || '';
+    const finalUrl = catIconUrlInput?.value?.trim() || '';
+    if (!finalUrl) return;
+    catIconHidden.value = finalUrl;
+    catImgPreview.innerHTML = `
+      <div class="image-preview-item" style="width:80px;height:80px;">
+        <img src="${finalUrl}" alt="Preview" style="width:100%;height:100%;border-radius:50%;object-fit:cover;" onerror="this.src='https://via.placeholder.com/80'">
+      </div>
+    `;
+  };
+  if (setCatImgBtn) setCatImgBtn.addEventListener('click', applyCatImage);
+  if (catIconUrlInput) catIconUrlInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyCatImage(); } });
+  // Pre-fill URL input if editing existing category
+  if (catIconUrlInput && catIconHidden?.value) catIconUrlInput.value = catIconHidden.value;
+
   document.getElementById('save-category-btn').addEventListener('click', () => {
     const nameAr = document.getElementById('cat-name-ar').value.trim();
     const nameEn = document.getElementById('cat-name-en').value.trim();
@@ -1115,8 +1152,8 @@ function openCategoryModal(category = null) {
     const data = {
       name_ar: nameAr,
       name_en: nameEn,
-      icon: document.getElementById('cat-icon').value.trim(),
-      image: '',
+      image: document.getElementById('cat-icon').value.trim(),
+      icon: document.getElementById('cat-icon').value.trim(), // fallback
       order: parseInt(document.getElementById('cat-order').value) || 0,
       status: document.getElementById('cat-status').value,
     };
@@ -1242,10 +1279,7 @@ function openOrderDetailModal(orderId) {
           ${order.items.map(item => `
             <tr>
               <td><img class="item-img" src="${item.image || 'https://via.placeholder.com/36'}" alt="" loading="lazy"></td>
-              <td>
-                ${currentLang === 'ar' ? item.name_ar : item.name_en}
-                ${item.color || item.size ? `<br><span style="font-size:12px;color:var(--text-light);background:var(--bg-card);padding:2px 6px;border-radius:4px;border:1px solid var(--border);display:inline-block;margin-top:4px;">${item.color || ''} ${item.color && item.size ? '-' : ''} ${item.size || ''}</span>` : ''}
-              </td>
+              <td>${currentLang === 'ar' ? item.name_ar : item.name_en}</td>
               <td>${item.discountedPrice.toLocaleString()} ${cur}</td>
               <td>${item.quantity}</td>
               <td>${(item.discountedPrice * item.quantity).toLocaleString()} ${cur}</td>
@@ -1940,20 +1974,6 @@ function renderSettingsPart2() {
           </div>
         </div>
       </div>
-      </div>
-    </div>
-
-    <div class="settings-card">
-      <div class="settings-card-header">
-        <i class="ph ph-database"></i> 
-        <h3>${currentLang === 'ar' ? 'النسخ الاحتياطي واستعادة البيانات' : 'Data Backup & Restore'}</h3>
-      </div>
-      <div class="settings-card-body" style="display:flex;gap:15px;align-items:center;flex-wrap:wrap;">
-        <button id="export-backup-btn" class="btn btn-secondary" style="flex:1;"><i class="ph ph-download-simple"></i> ${currentLang === 'ar' ? 'تحميل نسخة احتياطية' : 'Export Backup'}</button>
-        <button id="import-backup-btn" class="btn btn-outline" style="flex:1;"><i class="ph ph-upload-simple"></i> ${currentLang === 'ar' ? 'استعادة بيانات' : 'Restore Backup'}</button>
-        <input type="file" id="import-backup-file" accept=".json" style="display:none;">
-      </div>
-      <p style="margin-top:10px;font-size:13px;color:var(--text-light);">${currentLang === 'ar' ? 'النسخة الاحتياطية بتشمل (المنتجات، الأقسام، الإعدادات، الطلبات، الكوبونات) لضمان عدم ضياع أي بيانات.' : 'Backup includes products, categories, settings, orders, and coupons to prevent data loss.'}</p>
     </div>
 
     <div style="text-align:center;padding:20px 0">
@@ -1965,42 +1985,60 @@ function renderSettingsPart2() {
 }
 
 function attachSettingsListeners() {
-  const saveBtn = document.getElementById('save-settings-btn');
-  const csvInput = document.getElementById('shipping-csv-upload');
-  const uploadBtn = document.getElementById('btn-upload-shipping-csv');
 
-  if (uploadBtn && csvInput) {
-    uploadBtn.addEventListener('click', () => csvInput.click());
+  // Color live preview
+  const colorInput = document.getElementById('set-accent-color');
+  const colorSwatch = document.getElementById('color-swatch');
+  const colorBtn = document.getElementById('color-btn-sample');
+
+  if (colorInput) {
+    colorInput.addEventListener('input', () => {
+      const color = colorInput.value;
+      if (colorSwatch) colorSwatch.style.background = color;
+      if (colorBtn) colorBtn.style.background = color;
+    });
+  }
+
+  // Save settings
+  const saveBtn = document.getElementById('save-settings-btn');
+
+  // CSV Upload Logic
+  const csvUploadBtn = document.getElementById('btn-upload-shipping-csv');
+  const csvInput = document.getElementById('shipping-csv-upload');
+  if (csvUploadBtn && csvInput) {
+    csvUploadBtn.addEventListener('click', () => {
+      csvInput.click();
+    });
     csvInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      
-      const currentLang = getLang();
       const reader = new FileReader();
       reader.onload = (event) => {
         const text = event.target.result;
-        const rows = text.split('\n');
+        const lines = text.split(/\r?\n/).filter(l => l.trim() !== '');
         let updatedCount = 0;
-        const grid = document.getElementById('shipping-rates-grid');
-        
-        rows.forEach(row => {
-          if (row.trim()) {
-            const cols = row.split(',');
-            if (cols.length >= 2) {
-              const city = cols[0].trim();
-              const rate = parseFloat(cols[1].trim());
-              
-              if (city && !isNaN(rate)) {
-                let input = grid.querySelector(`input[data-city="${city}"]`);
-                if (input) {
-                  input.value = rate;
-                  updatedCount++;
-                } else if (grid) {
+        lines.forEach((line, index) => {
+          if (index === 0 && (line.includes('المحافظة') || line.includes('City') || line.includes('السعر') || line.includes('Price'))) {
+            return; // Skip header
+          }
+          const parts = line.split(',');
+          if (parts.length >= 2) {
+            const city = parts[0].trim();
+            const rate = parseFloat(parts[1].trim());
+            if (city && !isNaN(rate)) {
+              let input = document.querySelector(`.city-shipping-rate[data-city="${city}"]`);
+              if (input) {
+                input.value = rate;
+                updatedCount++;
+              } else {
+                const grid = document.querySelector('.shipping-rates-grid');
+                if (grid) {
                   const div = document.createElement('div');
                   div.className = 'form-group';
+                  div.style = 'margin-bottom:0; display:flex; flex-direction:column; gap:4px;';
                   div.innerHTML = `
-                    <label>${city}</label>
-                    <input type="number" class="city-shipping-rate" data-city="${city}" value="${rate}" min="0">
+                    <label style="font-size:12px; color:var(--text-secondary);">${escapeHtml(city)}</label>
+                    <input type="number" class="city-shipping-rate" data-city="${escapeHtml(city)}" value="${rate}" min="0" style="padding:6px 10px; font-size:14px; border-radius:4px; border:1px solid var(--border); background:var(--bg-card); color:var(--text-primary);">
                   `;
                   grid.appendChild(div);
                   updatedCount++;
@@ -2066,14 +2104,7 @@ function attachSettingsListeners() {
       settingsHistory.push(JSON.parse(JSON.stringify({...Store.getSettings(), ...newSettings})));
       settingsHistoryIndex = settingsHistory.length - 1;
 
-      const currentSettings = Store.getSettings();
-      const changedSettings = {};
-      for (const key in newSettings) {
-        if (JSON.stringify(newSettings[key]) !== JSON.stringify(currentSettings[key])) {
-          changedSettings[key] = newSettings[key];
-        }
-      }
-      Store.saveSettings(changedSettings);
+      Store.saveSettings(newSettings);
       showToast(t('admin.settingsSaved'), 'success');
       renderContentArea('settings');
     });
@@ -2326,15 +2357,7 @@ function attachDesignListeners() {
       settingsHistory.push(JSON.parse(JSON.stringify({...Store.getSettings(), ...newSettings})));
       settingsHistoryIndex = settingsHistory.length - 1;
 
-      // We already have currentSettings declared above
-      const oldSettings = currentSettings;
-      const changedSettings = {};
-      for (const key in newSettings) {
-        if (JSON.stringify(newSettings[key]) !== JSON.stringify(currentSettings[key])) {
-          changedSettings[key] = newSettings[key];
-        }
-      }
-      Store.saveSettings(changedSettings);
+      Store.saveSettings(newSettings);
       showToast(currentLang === 'ar' ? 'تم حفظ التصميم' : 'Design saved', 'success');
       renderContentArea('design');
     });

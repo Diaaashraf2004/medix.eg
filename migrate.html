@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>Database Migration Tool</title>
+  <style>
+    body { font-family: system-ui, sans-serif; padding: 40px; text-align: center; background: #0a0a0f; color: #fff; }
+    .container { max-width: 600px; margin: 0 auto; background: #15151a; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+    h1 { color: #c9a04e; }
+    p { font-size: 1.1em; line-height: 1.6; color: #aaa; }
+    input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #333; background: #222; color: white; }
+    button { background: #c9a04e; color: #000; border: none; padding: 15px 30px; font-size: 1.2em; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; margin-top: 20px; }
+    button:hover { background: #b08d44; }
+    button:disabled { background: #555; color: #888; cursor: not-allowed; }
+    #status { margin-top: 20px; font-size: 1.2em; font-weight: bold; }
+    .success { color: #2ecc71; }
+    .error { color: #e74c3c; }
+    .warning { color: #f39c12; }
+    #migrationSection { display: none; }
+  </style>
+
+  <!-- Firebase Compat -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Database Migration Tool</h1>
+    
+    <div id="loginSection">
+      <p>Please login as Admin to authorize the migration.</p>
+      <input type="email" id="adminEmail" placeholder="Admin Email" required>
+      <input type="password" id="adminPassword" placeholder="Admin Password" required>
+      <br>
+      <button id="loginBtn">Login</button>
+    </div>
+
+    <div id="migrationSection">
+      <p>This tool will migrate your existing arrays from <code style="color:#c9a04e">store_data</code> into independent, safe collections.</p>
+      <p class="warning">Do NOT close this tab until the migration is 100% complete.</p>
+      <button id="startBtn">Start Migration</button>
+    </div>
+
+    <div id="status">Ready.</div>
+  </div>
+
+  <script src="js/firebase-config.js"></script>
+  <script src="js/migrate.js"></script>
+</body>
+</html>

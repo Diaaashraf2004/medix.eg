@@ -2193,14 +2193,8 @@ function attachSettingsListeners() {
       settingsHistory.push(JSON.parse(JSON.stringify({...Store.getSettings(), ...newSettings})));
       settingsHistoryIndex = settingsHistory.length - 1;
 
-      const currentSettings = Store.getSettings();
-      const changedSettings = {};
-      for (const key in newSettings) {
-        if (JSON.stringify(newSettings[key]) !== JSON.stringify(currentSettings[key])) {
-          changedSettings[key] = newSettings[key];
-        }
-      }
-      Store.saveSettings(changedSettings);
+      // Save all settings to guarantee complete real-time sync across devices
+      Store.saveSettings(newSettings);
       showToast(t('admin.settingsSaved'), 'success');
       renderContentArea('settings');
     });

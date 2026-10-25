@@ -3068,11 +3068,17 @@ Store.on('settings-updated', (settings) => {
   if (settings.textColor) {
     document.documentElement.style.setProperty('--text-primary', settings.textColor);
   }
-  // applyDynamicStyles removed — styles are managed via CSS custom properties above
+  applyFonts(settings);
   renderNavbar();
   renderFooter();
   renderCartSidebar();
   handleRoute();
+
+  // Live-refresh Size Guide modal if currently open on screen
+  const openModal = document.querySelector('.modal-overlay.open .size-guide-modal-content');
+  if (openModal) {
+    openSizeGuideModal();
+  }
 });
 
 Store.on('auth-changed', () => {
@@ -3176,29 +3182,40 @@ function init() {
 
 // applyDynamicStyles removed as per user request for fixed professional palette
 
+// Cross-tab real-time sync via BroadcastChannel
+if (typeof BroadcastChannel !== 'undefined') {
+  try {
+    const syncChannel = new BroadcastChannel('medix_realtime_sync');
+    syncChannel.onmessage = (event) => {
+      if (!event.data) return;
+      const { type, data } = event.data;
+      if (type === 'settings-updated' && data) {
+        Store.emit('settings-updated', Store.getSettings());
+      }
+    };
+  } catch(e) {}
+}
+
 // Listen for updates from Admin Panel (other tabs)
 window.addEventListener('storage', (e) => {
   if (e.key && e.key.startsWith('lr_')) {
-    // Re-fetch data and re-render
-    const settings = Store.getSettings();
-    applyFonts(settings);
-    renderNavbar();
-    renderFooter();
-    renderCartSidebar();
-    handleRoute();
+    if (e.key === 'lr_settings_v2') {
+      Store.emit('settings-updated', Store.getSettings());
+    } else {
+      Store.emit('data-synced');
+    }
   }
 });
 
 // Listen for updates from Firebase sync locally
 window.addEventListener('firebase-data-synced', (e) => {
-  const key = e.detail.key;
+  const key = e.detail?.key;
   if (key && key.startsWith('lr_')) {
-    const settings = Store.getSettings();
-    applyFonts(settings);
-    renderNavbar();
-    renderFooter();
-    renderCartSidebar();
-    handleRoute();
+    if (key === 'lr_settings_v2') {
+      Store.emit('settings-updated', Store.getSettings());
+    } else {
+      Store.emit('data-synced');
+    }
   }
 });
 

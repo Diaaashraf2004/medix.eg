@@ -246,11 +246,20 @@ function saveSettings(settings) {
   const updated = { ...current, ...settings };
   saveToStorage(STORAGE_KEYS.settings, updated);
   emit('settings-updated', updated);
+
+  // Broadcast to other open tabs immediately (Instant Local Real-Time)
+  if (typeof BroadcastChannel !== 'undefined') {
+    try {
+      const bc = new BroadcastChannel('medix_realtime_sync');
+      bc.postMessage({ type: 'settings-updated', data: updated });
+      bc.close();
+    } catch(e) {}
+  }
   
-  if (window.FirebaseDB && window.FirebaseDB.db && Object.keys(settings).length > 0 && !isFirebaseSyncing) {
+  if (window.FirebaseDB && window.FirebaseDB.db && !isFirebaseSyncing) {
     try {
       const { doc, setDoc } = window.FirebaseDB;
-      setDoc(doc(window.FirebaseDB.db, "store_data", STORAGE_KEYS.settings), settings, { merge: true })
+      setDoc(doc(window.FirebaseDB.db, "store_data", STORAGE_KEYS.settings), updated, { merge: true })
         .catch(e => console.error("Settings cloud update failed:", e));
     } catch(e) {}
   }
@@ -1221,6 +1230,7 @@ function initFirebaseSync() {
   };
 
   const applyLocalData = (key, payload) => {
+    if (!payload) return;
     const newPayloadStr = JSON.stringify(payload);
     let isDifferent = true;
     
@@ -1249,8 +1259,18 @@ function initFirebaseSync() {
     }
 
     if (isDifferent) {
-      isFirebaseSyncing = true;
-      isFirebaseSyncing = false;
+      if (key === STORAGE_KEYS.settings) {
+        emit('settings-updated', getSettings());
+      } else if (key === STORAGE_KEYS.products) {
+        emit('products-updated', payload);
+      } else if (key === STORAGE_KEYS.categories) {
+        emit('categories-updated', payload);
+      } else if (key === STORAGE_KEYS.orders) {
+        emit('orders-updated', payload);
+      } else if (key === STORAGE_KEYS.reviews) {
+        emit('reviews-updated', payload);
+      }
+      emit('data-synced', { key, payload });
       
       try {
         window.dispatchEvent(new StorageEvent('storage', { key: key }));
@@ -1274,15 +1294,16 @@ function initFirebaseSync() {
     });
   });
 
-  // Sync Single Documents
+  // Sync Single Documents (Settings)
   docsToSync.forEach(key => {
     onSnapshot(doc(db, "store_data", key), (docSnap) => {
       const exists = typeof docSnap.exists === 'function' ? docSnap.exists() : docSnap.exists;
-      if (exists && docSnap.data().data) {
-        applyLocalData(key, docSnap.data().data);
-      } else if (key === STORAGE_KEYS.settings) {
-         // Default settings fallback if doc doesn't exist
-         applyLocalData(key, _memoryStore[key] || {});
+      if (exists && docSnap.data()) {
+        const raw = docSnap.data();
+        const payload = (raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) && Object.keys(raw).length === 1)
+          ? raw.data
+          : raw;
+        applyLocalData(key, payload);
       }
       checkInitialSync(key);
     }, (error) => {
@@ -1290,6 +1311,22 @@ function initFirebaseSync() {
       checkInitialSync(key);
     });
   });
+}
+
+// Cross-tab real-time sync via BroadcastChannel
+if (typeof BroadcastChannel !== 'undefined') {
+  try {
+    const syncChannel = new BroadcastChannel('medix_realtime_sync');
+    syncChannel.onmessage = (event) => {
+      if (!event.data) return;
+      const { type, data } = event.data;
+      if (type === 'settings-updated' && data) {
+        saveToStorage(STORAGE_KEYS.settings, data);
+        emit('settings-updated', getSettings());
+        window.dispatchEvent(new CustomEvent('firebase-data-synced', { detail: { key: STORAGE_KEYS.settings } }));
+      }
+    };
+  } catch(e) {}
 }
 
 window.addEventListener('firebase-ready', initFirebaseSync);

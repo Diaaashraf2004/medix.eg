@@ -40,7 +40,7 @@ try {
     setDoc: (docRef, data, options) => docRef.set(data, options), 
     updateDoc: (docRef, data) => docRef.update(data), 
     deleteDoc: (docRef) => docRef.delete(), 
-    onSnapshot: (ref, callback) => ref.onSnapshot(callback),
+    onSnapshot: (ref, callback, errorCallback) => ref.onSnapshot(callback, errorCallback),
     writeBatch: (dbInstance) => dbInstance.batch(),
     runTransaction: (dbInstance, updateFunction) => dbInstance.runTransaction(updateFunction),
     increment: (value) => firebase.firestore.FieldValue.increment(value)
@@ -49,9 +49,5 @@ try {
   // Notify the app that Firebase is ready
   window.dispatchEvent(new Event('firebase-ready'));
 } catch (error) {
-  console.error("FIREBASE INIT ERROR:", error);
-  // Visually alert the user so we know exactly why it fails locally
-  setTimeout(() => {
-    alert("Firebase failed to initialize locally! Error: " + error.message);
-  }, 1000);
+  console.warn("FIREBASE INIT NOTICE:", error.message);
 }

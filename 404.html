@@ -10,11 +10,11 @@
     
     // Determine base path. If on github.io, it's typically /repoName/
     var basePath = '/';
-    var exactRepoName = 'Medix.eg';
+    var exactRepoName = 'medix.eg';
     if (l.hostname.indexOf('github.io') !== -1) {
       var parts = path.split('/');
       if (parts.length > 1 && parts[1] !== '') {
-        // Force the correct case if it matches case-insensitively
+        // Force the correct case (must be lowercase 'medix.eg' on GitHub Pages)
         if (parts[1].toLowerCase() === exactRepoName.toLowerCase()) {
           basePath = '/' + exactRepoName + '/';
         } else {
@@ -23,8 +23,17 @@
       }
     }
     
-    // Redirect to the correct base path, keeping the query string (e.g. ?fbclid=...) and hash
-    l.replace(l.origin + basePath + l.search + l.hash);
+    // Check if there is a subpath after /medix.eg/
+    var afterBase = path.substring(basePath.length);
+    if (afterBase.toLowerCase().indexOf('admin') === 0) {
+      l.replace(l.origin + basePath + 'admin.html' + l.search + l.hash);
+    } else {
+      var newHash = l.hash;
+      if (afterBase && afterBase !== 'index.html' && !newHash) {
+        newHash = '#/' + afterBase;
+      }
+      l.replace(l.origin + basePath + l.search + newHash);
+    }
   </script>
 </head>
 <body style="font-family: sans-serif; text-align: center; padding-top: 50px; color: #555;">

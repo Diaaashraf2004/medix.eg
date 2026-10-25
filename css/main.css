@@ -3749,3 +3749,60 @@ html[dir='rtl'] .gallery-nav-btn.next {
   background-color: var(--accent);
   color: #ffffff;
 }
+
+/* ================= MOBILE STICKY BUY BAR ================= */
+.mobile-sticky-buy-bar {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-sticky-buy-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 10px 16px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+    z-index: 1050;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+  }
+  .mobile-sticky-info {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex: 1;
+  }
+  .mobile-sticky-price {
+    font-weight: 800;
+    color: var(--text-primary);
+    font-size: 1.15rem;
+    line-height: 1.2;
+  }
+  .mobile-sticky-title {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+/* ================= CART SIDEBAR MOBILE SAFE AREAS ================= */
+.cart-sidebar {
+  height: 100vh;
+  height: 100dvh;
+}
+.cart-footer {
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+
+/* ================= SIZE GUIDE STYLING ================= */
+.btn-size-guide:hover {
+  opacity: 0.85;
+}

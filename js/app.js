@@ -417,6 +417,16 @@ function escapeHtml(str) {
   return div.innerHTML;
 }
 
+function normalizeArabicNumerals(str) {
+  if (!str) return '';
+  const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+  let res = String(str);
+  for (let i = 0; i < 10; i++) {
+    res = res.replace(new RegExp(arabicDigits[i], 'g'), String(i));
+  }
+  return res;
+}
+
 // ============================================
 // Components
 // ============================================
@@ -895,6 +905,83 @@ function renderQuickView(productId) {
   `;
 }
 
+// --- Size Guide Modal ---
+function openSizeGuideModal() {
+  const lang = getLang();
+  const title = lang === 'ar' ? '📏 دليل المقاسات - ميدكس (Medix)' : '📏 Size Guide - Medix';
+  const content = `
+    <div class="size-guide-modal-content" style="text-align: ${lang === 'ar' ? 'right' : 'left'};">
+      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:14px;">
+        ${lang === 'ar' 
+          ? 'جدول مقاسات السكراب والبالطو الطبي بالسنتيمتر (سم) والوزن التقريبي لمساعدتك في اختيار المقاس المثالي:' 
+          : 'Scrub and lab coat size measurements in cm and approximate weight:'}
+      </p>
+      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:14px;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.88rem; text-align:center; min-width:320px;">
+          <thead>
+            <tr style="background:var(--accent-light); color:var(--text); border-bottom:2px solid var(--border);">
+              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'المقاس' : 'Size'}</th>
+              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'محيط الصدر' : 'Chest'}</th>
+              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'عرض الكتف' : 'Shoulder'}</th>
+              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'طول السكراب' : 'Length'}</th>
+              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'الوزن التقريبي' : 'Weight'}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">S</td>
+              <td style="padding:9px 6px;">96 - 102 سم</td>
+              <td style="padding:9px 6px;">42 سم</td>
+              <td style="padding:9px 6px;">70 سم</td>
+              <td style="padding:9px 6px; font-weight:600;">55 - 68 كجم</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border); background:rgba(0,0,0,0.02);">
+              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">M</td>
+              <td style="padding:9px 6px;">104 - 110 سم</td>
+              <td style="padding:9px 6px;">44 سم</td>
+              <td style="padding:9px 6px;">72 سم</td>
+              <td style="padding:9px 6px; font-weight:600;">69 - 80 كجم</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">L</td>
+              <td style="padding:9px 6px;">112 - 118 سم</td>
+              <td style="padding:9px 6px;">46 سم</td>
+              <td style="padding:9px 6px;">74 سم</td>
+              <td style="padding:9px 6px; font-weight:600;">81 - 92 كجم</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border); background:rgba(0,0,0,0.02);">
+              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">XL</td>
+              <td style="padding:9px 6px;">120 - 126 سم</td>
+              <td style="padding:9px 6px;">48 سم</td>
+              <td style="padding:9px 6px;">76 سم</td>
+              <td style="padding:9px 6px; font-weight:600;">93 - 104 كجم</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">2XL</td>
+              <td style="padding:9px 6px;">128 - 134 سم</td>
+              <td style="padding:9px 6px;">50 سم</td>
+              <td style="padding:9px 6px;">78 سم</td>
+              <td style="padding:9px 6px; font-weight:600;">105 - 118 كجم</td>
+            </tr>
+            <tr>
+              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">3XL</td>
+              <td style="padding:9px 6px;">136 - 142 سم</td>
+              <td style="padding:9px 6px;">52 سم</td>
+              <td style="padding:9px 6px;">80 سم</td>
+              <td style="padding:9px 6px; font-weight:600;">119 - 132 كجم</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:10px 12px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:0.83rem; color:var(--text-secondary); display:flex; gap:8px; align-items:center;">
+        <i class="ph-fill ph-lightbulb" style="color:#f59e0b; font-size:1.3rem; flex-shrink:0;"></i>
+        <span>${lang === 'ar' ? 'نصيحة: إذا كنت محتاراً بين مقاسين، ننصح باختيار المقاس الأكبر لحرية وراحة حركة أكبر أثناء المناوبات وساعات العمل الطويلة.' : 'Tip: If between two sizes, choose the larger size for extra comfort during long shifts.'}</span>
+      </div>
+    </div>
+  `;
+  showModal(title, content);
+}
+
 // ============================================
 // Pages
 // ============================================
@@ -1260,7 +1347,12 @@ function renderProductDetailPage(productId) {
 
             ${(product.sizes && product.sizes.length > 0) ? `
               <div class="product-variant-section" style="margin-bottom:20px;">
-                <div class="variant-title" style="margin-bottom:8px;">${lang === 'ar' ? 'المقاس:' : 'Size:'} <span id="selected-size-name" style="font-weight:bold; color:var(--text); margin-inline-start:4px;">${lang === 'ar' ? 'اختر المقاس' : 'Select Size'}</span></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <div class="variant-title">${lang === 'ar' ? 'المقاس:' : 'Size:'} <span id="selected-size-name" style="font-weight:bold; color:var(--text); margin-inline-start:4px;">${lang === 'ar' ? 'اختر المقاس' : 'Select Size'}</span></div>
+                  <button type="button" class="btn-size-guide" data-action="open-size-guide" style="background:none; border:none; color:var(--primary); font-size:0.85rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px; text-decoration:underline;">
+                    <i class="ph ph-ruler"></i> ${lang === 'ar' ? 'دليل المقاسات 📏' : 'Size Guide 📏'}
+                  </button>
+                </div>
                 <div class="size-selectors" id="product-sizes-container" style="display:flex; gap:10px; flex-wrap:wrap;">
                   ${product.sizes.map(s => `
                     <button class="size-swatch" data-action="select-size" data-size="${escapeHtml(s)}" style="padding:8px 16px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--bg-card); cursor:pointer; font-weight:600;">${escapeHtml(s)}</button>
@@ -1393,6 +1485,17 @@ function renderProductDetailPage(productId) {
         ` : ''}
       </div>
       ${renderBannersForPosition('product_bottom')}
+
+      <!-- Mobile Sticky Bottom Buy Bar -->
+      <div class="mobile-sticky-buy-bar" id="mobile-sticky-bar">
+        <div class="mobile-sticky-info">
+          <div class="mobile-sticky-price">${formatPrice(discountedPrice)}</div>
+          <div class="mobile-sticky-title">${escapeHtml(getProductName(product))}</div>
+        </div>
+        <button class="btn btn-primary btn-sm" style="padding:10px 20px; font-weight:700; border-radius:24px; display:inline-flex; align-items:center; gap:6px;" data-action="detail-buy-now" data-product-id="${product.id}" ${outOfStock ? 'disabled' : ''}>
+          <i class="ph ph-lightning"></i> ${outOfStock ? t('product.outOfStock') : (lang === 'ar' ? 'اشتري الآن' : 'Buy Now')}
+        </button>
+      </div>
     </div>
   `;
 }
@@ -1490,15 +1593,16 @@ function renderCheckoutPage() {
 
               <h3 class="mb-3 mt-4">${t('checkout.shippingInfo')}</h3>
               <div class="form-group">
-                <label class="form-label" for="checkout-city">${t('checkout.city')} (اختياري - للاستلام من الفرع اتركه فارغاً)</label>
-                <select class="form-select" id="checkout-city">
-                  <option value="">بدون شحن (استلام من الفرع)</option>
+                <label class="form-label" for="checkout-city">${t('checkout.city')} *</label>
+                <select class="form-select" id="checkout-city" required>
+                  <option value="">${lang === 'ar' ? '-- اختر المحافظة لتحديد سعر الشحن --' : '-- Select city for shipping rate --'}</option>
+                  <option value="pickup">${lang === 'ar' ? '🏢 استلام من مقر الشركة (بدون مصاريف شحن)' : '🏢 Store Pickup (Free)'}</option>
                   ${(Array.isArray(cities) ? cities : []).map(city => `<option value="${escapeHtml(city)}">${escapeHtml(city)}</option>`).join('')}
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label" for="checkout-address">${t('checkout.address')} *</label>
-                <input type="text" class="form-input" id="checkout-address" required>
+                <input type="text" class="form-input" id="checkout-address" placeholder="${lang === 'ar' ? 'اسم الشارع، رقم العمارة، علامة مميزة' : 'Street name, building no, landmark'}" required>
               </div>
               <div class="form-group">
                 <label class="form-label" for="checkout-notes">${t('checkout.notes')}</label>
@@ -1518,6 +1622,21 @@ function renderCheckoutPage() {
               <button type="button" class="btn btn-primary btn-lg w-100" data-action="place-order" id="btn-place-order">
                 ${t('checkout.placeOrder')}
               </button>
+
+              <div class="checkout-trust-badges" style="margin-top: 16px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center;">
+                <div style="background: var(--bg-card); padding: 10px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                  <i class="ph-fill ph-shield-check" style="color: var(--primary); font-size: 1.4rem;"></i>
+                  <div style="font-size: 0.78rem; font-weight: 600; margin-top: 4px;">${lang === 'ar' ? 'معاينة قبل الدفع' : 'Inspect First'}</div>
+                </div>
+                <div style="background: var(--bg-card); padding: 10px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                  <i class="ph-fill ph-arrows-clockwise" style="color: var(--primary); font-size: 1.4rem;"></i>
+                  <div style="font-size: 0.78rem; font-weight: 600; margin-top: 4px;">${lang === 'ar' ? 'استبدال واسترجاع' : 'Easy Returns'}</div>
+                </div>
+                <div style="background: var(--bg-card); padding: 10px 6px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                  <i class="ph-fill ph-truck" style="color: var(--primary); font-size: 1.4rem;"></i>
+                  <div style="font-size: 0.78rem; font-weight: 600; margin-top: 4px;">${lang === 'ar' ? 'شحن سريع ومؤمن' : 'Fast Delivery'}</div>
+                </div>
+              </div>
             </form>
           </div>
 
@@ -1668,16 +1787,40 @@ function updateCheckoutSummary() {
 
 // --- Order Success Page ---
 function renderOrderSuccessPage(orderNumber) {
+  const settings = Store.getSettings();
+  const lang = getLang();
+  const order = Store.getOrderByNumber(orderNumber);
+  const waNumber = (settings.contactWhatsapp || '').replace(/\D/g, '');
+  const waMsg = encodeURIComponent(
+    lang === 'ar'
+      ? `مرحباً ميدكس، قمت بعمل طلب رقم ${orderNumber} باسم (${order?.customerName || ''})، وأريد تأكيد الطلب ومتابعة الشحن.`
+      : `Hello Medix, I placed order #${orderNumber} for (${order?.customerName || ''}), and would like to confirm my order.`
+  );
+  const waLink = waNumber ? `https://wa.me/${waNumber}?text=${waMsg}` : '';
+
   return `
     <div class="page-content">
       <div class="container">
         <div class="success-page">
           <span class="success-icon"><i class="ph ph-check-circle"></i></span>
           <h1 class="success-title">${t('checkout.success')}</h1>
-          <p style="color:var(--text-secondary);margin-bottom:24px;">${getLang() === 'ar' ? 'سنتواصل معك قريباً لتأكيد التفاصيل. يمكنك متابعة طلبك من خلال الكود الظاهر بالأسفل أو باستخدام رقم هاتفك المسجل.' : "We'll contact you soon. You can track your order using the code below or your registered phone number."}</p>
-          <div class="success-order-number" onclick="navigator.clipboard.writeText('${orderNumber}').then(()=>showToast('${getLang() === 'ar' ? 'تم النسخ بنجاح!' : 'Copied successfully!'}', 'success'))" title="${getLang() === 'ar' ? 'اضغط للنسخ' : 'Click to copy'}">
+          <p style="color:var(--text-secondary);margin-bottom:18px;">${lang === 'ar' ? 'شكراً لطلبك من ميدكس! تم تسجيل طلبك بنجاح وسنقوم بتجهيزه فوراً.' : "Thank you for shopping with Medix! Your order has been placed successfully."}</p>
+          <div class="success-order-number" onclick="navigator.clipboard.writeText('${orderNumber}').then(()=>showToast('${lang === 'ar' ? 'تم نسخ كود الطلب!' : 'Order code copied!'}', 'success'))" title="${lang === 'ar' ? 'اضغط للنسخ' : 'Click to copy'}">
             ${orderNumber || ''} <i class="ph ph-copy" style="font-size: 1.2rem; margin-inline-start: 8px;"></i>
           </div>
+
+          ${waLink ? `
+            <div style="margin: 22px 0 10px;">
+              <a href="${waLink}" target="_blank" class="btn btn-lg" style="background:#25D366; color:#ffffff; font-weight:700; border-radius:30px; padding:12px 24px; display:inline-flex; align-items:center; gap:8px; box-shadow:0 6px 18px rgba(37,211,102,0.35); text-decoration:none; font-size:1rem;">
+                <i class="ph-fill ph-whatsapp-logo" style="font-size:1.4rem;"></i>
+                <span>${lang === 'ar' ? 'تأكيد الطلب وتتبع الشحن عبر واتساب 💬' : 'Confirm Order via WhatsApp 💬'}</span>
+              </a>
+              <div style="font-size:0.85rem; color:var(--text-muted); margin-top:8px;">
+                ${lang === 'ar' ? '⚡ خطوة موصى بها: تواصل معنا لتأكيد عنوانك وتسريع خروج الشحنة' : 'Recommended: Contact us to expedite your shipment'}
+              </div>
+            </div>
+          ` : ''}
+
           <div class="mt-4 flex-center gap-2" style="flex-wrap:wrap;">
             <a href="#/track/${orderNumber || ''}" class="btn btn-primary" id="btn-track-success">${t('checkout.trackOrder')}</a>
             <a href="#/" class="btn btn-secondary" id="btn-home-success">${t('checkout.backToHome')}</a>
@@ -2008,6 +2151,7 @@ function renderProfilePage() {
   `;
 }
 
+// --- Size Guide Modal ---
 // ============================================
 // Products Page - Filtering/Sorting Logic
 // ============================================
@@ -2088,6 +2232,10 @@ document.addEventListener('click', (e) => {
   const categoryId = target.dataset.categoryId;
 
   switch (action) {
+    case 'open-size-guide': {
+      openSizeGuideModal();
+      break;
+    }
     // Product Gallery
     case 'select-detail-image': {
       const index = parseInt(target.dataset.index);
@@ -2700,9 +2848,14 @@ document.addEventListener('change', (e) => {
 function updateCheckoutShipping(city) {
   const shippingDisplay = document.getElementById('checkout-shipping-display');
   const totalDisplay = document.getElementById('checkout-total-display');
+  const lang = getLang();
 
-  if (!city) {
-    if (shippingDisplay) shippingDisplay.textContent = '—';
+  if (!city || city === 'pickup') {
+    if (shippingDisplay) {
+      shippingDisplay.innerHTML = city === 'pickup'
+        ? `<span style="color:var(--success); font-weight:700;">${lang === 'ar' ? 'استلام من الفرع (مجاني)' : 'Store Pickup (Free)'}</span>`
+        : '—';
+    }
     const cartTotal = Store.getCartTotal('');
     let finalTotal = cartTotal.subtotal;
     if (currentCouponCode) {
@@ -2765,7 +2918,7 @@ async function handlePlaceOrder() {
     document.getElementById('checkout-name')?.focus();
     return;
   }
-  const cleanPhone = phone ? phone.replace(/[\s\-\(\)]/g, '') : '';
+  const cleanPhone = phone ? normalizeArabicNumerals(phone).replace(/[\s\-\(\)]/g, '') : '';
   const phoneRegex = /^(?:\+20|0020)?01[0125]\d{8}$/;
   if (!phoneRegex.test(cleanPhone)) {
     showToast(t('checkout.invalidPhone'), 'error');
@@ -2789,7 +2942,7 @@ async function handlePlaceOrder() {
   try {
     const order = await Store.createOrder({
       customerName: name,
-      customerPhone: phone,
+      customerPhone: cleanPhone,
       customerEmail: email,
       city: city,
       customerAddress: address,
@@ -2833,8 +2986,7 @@ async function handlePlaceOrder() {
       ).then(
         () => console.log('Order email sent successfully'),
         (err) => {
-          console.error('Failed to send order email:', err);
-          alert("خطأ في إرسال الإيميل (EmailJS): " + JSON.stringify(err));
+          console.warn('Failed to send order email:', err);
         }
       );
     }
@@ -2853,6 +3005,7 @@ async function handlePlaceOrder() {
   }
   } catch (error) {
     console.error("Order error:", error);
+    showToast(error.message || (getLang() === 'ar' ? 'حدث خطأ أثناء حفظ الطلب، يرجى المحاولة مرة أخرى' : 'Failed to place order, please try again'), 'error');
     if (btn) {
       btn.disabled = false;
       btn.innerHTML = originalBtnText;

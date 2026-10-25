@@ -565,6 +565,7 @@ async function createOrder(orderData) {
     updatedAt: new Date().toISOString()
   };
 
+  let cloudSynced = false;
   if (window.FirebaseDB && window.FirebaseDB.db) {
     try {
       const { db, runTransaction, doc } = window.FirebaseDB;
@@ -575,7 +576,8 @@ async function createOrder(orderData) {
         const updates = [];
         for (let i = 0; i < cart.length; i++) {
           const pDoc = productDocs[i];
-          if (!pDoc.exists) throw new Error("عذراً، أحد المنتجات لم يعد متاحاً.");
+          const exists = typeof pDoc.exists === 'function' ? pDoc.exists() : pDoc.exists;
+          if (!exists) throw new Error("عذراً، أحد المنتجات لم يعد متاحاً.");
           
           const pData = pDoc.data();
           const newStock = pData.stock - cart[i].quantity;
@@ -591,20 +593,28 @@ async function createOrder(orderData) {
         const orderRef = doc(db, STORAGE_KEYS.orders, String(order.id));
         transaction.set(orderRef, order);
       });
+      cloudSynced = true;
     } catch (e) {
-      console.error("Order transaction failed:", e);
-      alert("فشل إتمام الطلب: " + e.message);
-      return null;
-    }
-  } else {
-    // Local fallback
-    cart.forEach(item => {
-      const product = getProduct(item.productId);
-      if (product) {
-        saveProduct({ ...product, stock: Math.max(0, product.stock - item.quantity) });
+      console.warn("Order cloud transaction failed, falling back to local storage:", e);
+      // If it's a genuine out-of-stock validation error, rethrow so UI displays friendly toast
+      if (e.message && (e.message.includes('نفدت الكمية') || e.message.includes('لم يعد متاحاً'))) {
+        throw e;
       }
-    });
+      // Otherwise (e.g. offline / permission / network glitch), save locally and try non-blocking setDoc
+      try {
+        const { doc, setDoc } = window.FirebaseDB;
+        setDoc(doc(window.FirebaseDB.db, STORAGE_KEYS.orders, String(order.id)), order).catch(()=>{});
+      } catch(err) {}
+    }
   }
+
+  // Always update stock locally to keep UI consistent
+  cart.forEach(item => {
+    const product = getProduct(item.productId);
+    if (product) {
+      saveProduct({ ...product, stock: Math.max(0, product.stock - item.quantity) });
+    }
+  });
 
   const orders = getFromStorage(STORAGE_KEYS.orders) || [];
   orders.push(order);
@@ -649,7 +659,7 @@ function deleteOrder(id) {
 function getOrderStats() {
   const orders = getOrders();
   const today = new Date().toISOString().split('T')[0];
-  const todayOrders = orders.filter(o => o.createdAt.startsWith(today));
+  const todayOrders = orders.filter(o => o?.createdAt?.startsWith(today));
   const totalRevenue = orders.filter(o => o?.status === 'delivered').reduce((sum, o) => sum + (Number(o.total) || 0), 0);
   const pendingOrders = orders.filter(o => ['new', 'confirmed', 'preparing', 'shipping'].includes(o.status));
 

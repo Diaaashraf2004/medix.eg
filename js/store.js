@@ -221,7 +221,20 @@ const DEFAULT_SETTINGS = {
   headingColor: '#000000',
   bodyBgColor: '#ffffff',
   textColor: '#111111',
-  customBanners: []
+  customBanners: [],
+  sizeGuideActive: true,
+  sizeGuideTitle_ar: 'دليل المقاسات طبقا للوزن',
+  sizeGuideTitle_en: 'Size Guide (By Weight)',
+  sizeGuideTip_ar: 'نصيحة: إذا كان وزنك بين مقاسين، ننصح باختيار المقاس الأكبر لحرية وراحة حركة أكبر أثناء ساعات العمل والمناوبات.',
+  sizeGuideTip_en: 'Tip: If your weight falls between two sizes, choose the larger size for extra comfort during long shifts.',
+  sizeGuide: [
+    { size: 'S', weight: '50 - 65 كجم' },
+    { size: 'M', weight: '65 - 75 كجم' },
+    { size: 'L', weight: '75 - 85 كجم' },
+    { size: 'XL', weight: '85 - 95 كجم' },
+    { size: '2XL', weight: '95 - 110 كجم' },
+    { size: '3XL', weight: '110 - 125 كجم' }
+  ]
 };
 
 function getSettings() {

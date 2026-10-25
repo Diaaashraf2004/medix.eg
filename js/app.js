@@ -905,78 +905,83 @@ function renderQuickView(productId) {
   `;
 }
 
-// --- Size Guide Modal ---
+function formatCategoryIcon(icon) {
+  if (!icon) return '📦';
+  const str = String(icon).trim();
+  if (str.startsWith('http://') || str.startsWith('https://') || str.startsWith('data:image/') || str.startsWith('./') || str.startsWith('/')) {
+    return `<img src="${str}" alt="category" class="category-icon-img" loading="lazy">`;
+  }
+  if (str.startsWith('<svg') || str.includes('<svg')) {
+    return str;
+  }
+  if (str.startsWith('ph-') || str.startsWith('ph ')) {
+    return `<i class="${str}"></i>`;
+  }
+  return str;
+}
+
+// --- Size Guide Modal (Based on Weight Only) ---
 function openSizeGuideModal() {
   const lang = getLang();
-  const title = lang === 'ar' ? '📏 دليل المقاسات - ميدكس (Medix)' : '📏 Size Guide - Medix';
+  const settings = Store.getSettings();
+  const title = lang === 'ar' 
+    ? (settings.sizeGuideTitle_ar || '📏 دليل المقاسات طبقا للوزن') 
+    : (settings.sizeGuideTitle_en || '📏 Size Guide (By Weight)');
+  
+  const sizeGuideList = (settings.sizeGuide && Array.isArray(settings.sizeGuide) && settings.sizeGuide.length > 0)
+    ? settings.sizeGuide
+    : [
+        { size: 'S', weight: '50 - 65 كجم' },
+        { size: 'M', weight: '65 - 75 كجم' },
+        { size: 'L', weight: '75 - 85 كجم' },
+        { size: 'XL', weight: '85 - 95 كجم' },
+        { size: '2XL', weight: '95 - 110 كجم' },
+        { size: '3XL', weight: '110 - 125 كجم' }
+      ];
+
+  const tip = lang === 'ar'
+    ? (settings.sizeGuideTip_ar || 'نصيحة: إذا كان وزنك بين مقاسين، ننصح باختيار المقاس الأكبر لراحة وحرية حركة أكبر أثناء ساعات العمل والمناوبات.')
+    : (settings.sizeGuideTip_en || 'Tip: If your weight falls between two sizes, choose the larger size for extra comfort during long shifts.');
+
+  const rowsHtml = sizeGuideList.map((row, idx) => `
+    <tr style="border-bottom: 1px solid var(--border); ${idx % 2 === 1 ? 'background: rgba(0,0,0,0.02);' : ''}">
+      <td style="padding: 12px 14px; font-weight: 800; color: var(--primary); font-size: 1.05rem;">
+        <span style="display:inline-block; min-width:38px; padding:4px 10px; background:var(--accent-light, #f4ede0); border-radius:6px; color:var(--text);">
+          ${escapeHtml(row.size || '')}
+        </span>
+      </td>
+      <td style="padding: 12px 14px; font-weight: 700; font-size: 0.95rem; color: var(--text);">
+        ${escapeHtml(row.weight || '')}
+      </td>
+    </tr>
+  `).join('');
+
   const content = `
     <div class="size-guide-modal-content" style="text-align: ${lang === 'ar' ? 'right' : 'left'};">
-      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:14px;">
+      <p style="color:var(--text-secondary); font-size:0.9rem; margin-bottom:14px; line-height:1.6;">
         ${lang === 'ar' 
-          ? 'جدول مقاسات السكراب والبالطو الطبي بالسنتيمتر (سم) والوزن التقريبي لمساعدتك في اختيار المقاس المثالي:' 
-          : 'Scrub and lab coat size measurements in cm and approximate weight:'}
+          ? 'اختر المقاس الأنسب لك بناءً على وزنك بالكيلوجرام (كجم):' 
+          : 'Choose the best size based on your weight in kilograms (kg):'}
       </p>
-      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:14px;">
-        <table style="width:100%; border-collapse:collapse; font-size:0.88rem; text-align:center; min-width:320px;">
+      <div style="overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:16px; border:1px solid var(--border); border-radius:10px;">
+        <table style="width:100%; border-collapse:collapse; text-align:center;">
           <thead>
-            <tr style="background:var(--accent-light); color:var(--text); border-bottom:2px solid var(--border);">
-              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'المقاس' : 'Size'}</th>
-              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'محيط الصدر' : 'Chest'}</th>
-              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'عرض الكتف' : 'Shoulder'}</th>
-              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'طول السكراب' : 'Length'}</th>
-              <th style="padding:10px 6px; font-weight:700;">${lang === 'ar' ? 'الوزن التقريبي' : 'Weight'}</th>
+            <tr style="background:var(--accent-light, #f8f6f0); color:var(--text); border-bottom:2px solid var(--border);">
+              <th style="padding:12px 14px; font-weight:800; width:40%;">${lang === 'ar' ? 'المقاس' : 'Size'}</th>
+              <th style="padding:12px 14px; font-weight:800; width:60%;">${lang === 'ar' ? 'الوزن المناسب' : 'Recommended Weight'}</th>
             </tr>
           </thead>
           <tbody>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">S</td>
-              <td style="padding:9px 6px;">96 - 102 سم</td>
-              <td style="padding:9px 6px;">42 سم</td>
-              <td style="padding:9px 6px;">70 سم</td>
-              <td style="padding:9px 6px; font-weight:600;">55 - 68 كجم</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border); background:rgba(0,0,0,0.02);">
-              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">M</td>
-              <td style="padding:9px 6px;">104 - 110 سم</td>
-              <td style="padding:9px 6px;">44 سم</td>
-              <td style="padding:9px 6px;">72 سم</td>
-              <td style="padding:9px 6px; font-weight:600;">69 - 80 كجم</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">L</td>
-              <td style="padding:9px 6px;">112 - 118 سم</td>
-              <td style="padding:9px 6px;">46 سم</td>
-              <td style="padding:9px 6px;">74 سم</td>
-              <td style="padding:9px 6px; font-weight:600;">81 - 92 كجم</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border); background:rgba(0,0,0,0.02);">
-              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">XL</td>
-              <td style="padding:9px 6px;">120 - 126 سم</td>
-              <td style="padding:9px 6px;">48 سم</td>
-              <td style="padding:9px 6px;">76 سم</td>
-              <td style="padding:9px 6px; font-weight:600;">93 - 104 كجم</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border);">
-              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">2XL</td>
-              <td style="padding:9px 6px;">128 - 134 سم</td>
-              <td style="padding:9px 6px;">50 سم</td>
-              <td style="padding:9px 6px;">78 سم</td>
-              <td style="padding:9px 6px; font-weight:600;">105 - 118 كجم</td>
-            </tr>
-            <tr>
-              <td style="padding:9px 6px; font-weight:800; color:var(--primary);">3XL</td>
-              <td style="padding:9px 6px;">136 - 142 سم</td>
-              <td style="padding:9px 6px;">52 سم</td>
-              <td style="padding:9px 6px;">80 سم</td>
-              <td style="padding:9px 6px; font-weight:600;">119 - 132 كجم</td>
-            </tr>
+            ${rowsHtml}
           </tbody>
         </table>
       </div>
-      <div style="padding:10px 12px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--radius-sm); font-size:0.83rem; color:var(--text-secondary); display:flex; gap:8px; align-items:center;">
-        <i class="ph-fill ph-lightbulb" style="color:#f59e0b; font-size:1.3rem; flex-shrink:0;"></i>
-        <span>${lang === 'ar' ? 'نصيحة: إذا كنت محتاراً بين مقاسين، ننصح باختيار المقاس الأكبر لحرية وراحة حركة أكبر أثناء المناوبات وساعات العمل الطويلة.' : 'Tip: If between two sizes, choose the larger size for extra comfort during long shifts.'}</span>
-      </div>
+      ${tip ? `
+        <div style="padding:12px 14px; background:var(--bg-card); border:1px solid var(--border); border-radius:8px; font-size:0.85rem; color:var(--text-secondary); display:flex; gap:10px; align-items:center; line-height:1.5;">
+          <i class="ph-fill ph-lightbulb" style="color:#f59e0b; font-size:1.4rem; flex-shrink:0;"></i>
+          <span>${escapeHtml(tip)}</span>
+        </div>
+      ` : ''}
     </div>
   `;
   showModal(title, content);
@@ -1046,7 +1051,7 @@ function renderHomePage() {
       <div class="categories-grid">
         ${categories.map(cat => `
           <a href="#/category/${cat.id}" class="category-card">
-            <span class="category-icon">${cat.icon || '📦'}</span>
+            <span class="category-icon">${formatCategoryIcon(cat.icon)}</span>
             <span class="category-name">${escapeHtml(getCategoryName(cat))}</span>
             <span class="category-count">${Store.getProductsByCategory(cat.id).length} ${t('common.products')}</span>
           </a>
@@ -1349,9 +1354,11 @@ function renderProductDetailPage(productId) {
               <div class="product-variant-section" style="margin-bottom:20px;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
                   <div class="variant-title">${lang === 'ar' ? 'المقاس:' : 'Size:'} <span id="selected-size-name" style="font-weight:bold; color:var(--text); margin-inline-start:4px;">${lang === 'ar' ? 'اختر المقاس' : 'Select Size'}</span></div>
-                  <button type="button" class="btn-size-guide" data-action="open-size-guide" style="background:none; border:none; color:var(--primary); font-size:0.85rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px; text-decoration:underline;">
-                    <i class="ph ph-ruler"></i> ${lang === 'ar' ? 'دليل المقاسات 📏' : 'Size Guide 📏'}
-                  </button>
+                  ${(settings.sizeGuideActive !== false) ? `
+                    <button type="button" class="btn-size-guide" data-action="open-size-guide" style="background:none; border:none; color:var(--primary); font-size:0.85rem; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px; text-decoration:underline;">
+                      <i class="ph ph-ruler"></i> ${lang === 'ar' ? (settings.sizeGuideTitle_ar || 'دليل المقاسات 📏') : (settings.sizeGuideTitle_en || 'Size Guide 📏')}
+                    </button>
+                  ` : ''}
                 </div>
                 <div class="size-selectors" id="product-sizes-container" style="display:flex; gap:10px; flex-wrap:wrap;">
                   ${product.sizes.map(s => `

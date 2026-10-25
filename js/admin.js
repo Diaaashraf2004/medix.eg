@@ -1829,6 +1829,65 @@ function renderSettingsPart2() {
       </div>
     </div>
 
+    <!-- Size Guide (By Weight) -->
+    <div class="settings-section">
+      <div class="settings-section-header">
+        <span class="section-icon"><i class="ph ph-ruler"></i></span>
+        <span>${currentLang === 'ar' ? 'دليل المقاسات (طبقا للوزن فقط)' : 'Size Guide (By Weight Only)'}</span>
+      </div>
+      <div class="settings-section-body">
+        <div class="admin-form">
+          <div class="form-group checkbox-group" style="display:flex; align-items:center; gap:8px; grid-column: 1 / -1; margin-bottom:16px;">
+            <input type="checkbox" id="set-size-guide-active" ${settings.sizeGuideActive !== false ? 'checked' : ''} style="width:20px; height:20px; cursor:pointer;">
+            <label for="set-size-guide-active" style="font-weight:bold; cursor:pointer; font-size:15px;">
+              ${currentLang === 'ar' ? 'تفعيل دليل المقاسات في صفحة المنتج' : 'Enable Size Guide on Product Page'}
+            </label>
+          </div>
+          <div class="form-group">
+            <label>${currentLang === 'ar' ? 'عنوان الدليل (عربي)' : 'Guide Title (Arabic)'}</label>
+            <input type="text" id="set-size-guide-title-ar" value="${escapeHtml(settings.sizeGuideTitle_ar || 'دليل المقاسات طبقا للوزن')}">
+          </div>
+          <div class="form-group">
+            <label>${currentLang === 'ar' ? 'عنوان الدليل (إنجليزي)' : 'Guide Title (English)'}</label>
+            <input type="text" id="set-size-guide-title-en" value="${escapeHtml(settings.sizeGuideTitle_en || 'Size Guide (By Weight)')}">
+          </div>
+          <div class="form-group full-width" style="grid-column: 1 / -1;">
+            <label>${currentLang === 'ar' ? 'نصيحة المقاسات (تظهر أسفل الجدول للعميل)' : 'Sizing Tip (Shown below table)'}</label>
+            <input type="text" id="set-size-guide-tip-ar" value="${escapeHtml(settings.sizeGuideTip_ar || 'نصيحة: إذا كان وزنك بين مقاسين، ننصح باختيار المقاس الأكبر لحرية وراحة حركة أكبر أثناء ساعات العمل والمناوبات.')}">
+          </div>
+          
+          <div class="form-group full-width" style="grid-column: 1 / -1; margin-top:10px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px;">
+              <label style="font-weight:bold; font-size:15px; margin-bottom:0;">
+                <i class="ph ph-scales"></i> ${currentLang === 'ar' ? 'المقاسات والأوزان المناسبة:' : 'Sizes and Weight Ranges:'}
+              </label>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-add-size-row" style="cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                <i class="ph ph-plus-circle"></i> ${currentLang === 'ar' ? 'إضافة مقاس جديد' : 'Add New Size'}
+              </button>
+            </div>
+            
+            <div style="overflow-x:auto; border:1px solid var(--border-color, #e2e8f0); border-radius:8px;">
+              <table style="width:100%; border-collapse:collapse; background:var(--bg-card, #fff);">
+                <thead>
+                  <tr style="background:var(--bg-hover, #f8fafc); border-bottom:2px solid var(--border-color, #e2e8f0); text-align:${currentLang === 'ar' ? 'right' : 'left'};">
+                    <th style="padding:10px 14px; width:35%; font-size:13px;">${currentLang === 'ar' ? 'المقاس (مثال: S, M, XL...)' : 'Size (e.g. S, M, XL...)'}</th>
+                    <th style="padding:10px 14px; width:50%; font-size:13px;">${currentLang === 'ar' ? 'الوزن المناسب (مثال: 50 - 65 كجم)' : 'Weight Range (e.g. 50 - 65 kg)'}</th>
+                    <th style="padding:10px 14px; width:15%; text-align:center; font-size:13px;">${currentLang === 'ar' ? 'حذف' : 'Delete'}</th>
+                  </tr>
+                </thead>
+                <tbody id="size-guide-rows-body">
+                  <!-- Dynamically rendered -->
+                </tbody>
+              </table>
+            </div>
+            <p style="font-size:12px; color:var(--text-light, #888); margin-top:8px;">
+              ${currentLang === 'ar' ? '💡 يمكنك كتابة المقاس والوزن المناسب له، أو إضافة مقاسات جديدة أو حذف أي مقاس لا تحتاجه.' : '💡 Enter size and corresponding weight, or add/delete any size as needed.'}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Contact -->
     <div class="settings-section">
       <div class="settings-section-header">
@@ -2016,6 +2075,59 @@ function attachSettingsListeners() {
     });
   }
 
+  // Size Guide Rows Setup
+  const sizeRowsBody = document.getElementById('size-guide-rows-body');
+  const addSizeBtn = document.getElementById('btn-add-size-row');
+  
+  function createSizeRow(size = '', weight = '') {
+    const tr = document.createElement('tr');
+    tr.className = 'size-guide-row';
+    tr.style.borderBottom = '1px solid var(--border-color, #f1f5f9)';
+    tr.innerHTML = `
+      <td style="padding:8px 12px;">
+        <input type="text" class="size-guide-input-size" value="${escapeHtml(size)}" placeholder="مثال: L" style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:6px; font-weight:700;">
+      </td>
+      <td style="padding:8px 12px;">
+        <input type="text" class="size-guide-input-weight" value="${escapeHtml(weight)}" placeholder="مثال: 75 - 85 كجم" style="width:100%; padding:8px 10px; border:1px solid #cbd5e1; border-radius:6px;">
+      </td>
+      <td style="padding:8px 12px; text-align:center;">
+        <button type="button" class="btn-delete-size-row" title="${currentLang === 'ar' ? 'حذف هذا المقاس' : 'Delete'}" style="background:none; border:none; color:#ef4444; font-size:18px; cursor:pointer; padding:4px 8px; border-radius:4px;">
+          <i class="ph ph-trash"></i>
+        </button>
+      </td>
+    `;
+    tr.querySelector('.btn-delete-size-row').addEventListener('click', () => {
+      tr.remove();
+    });
+    return tr;
+  }
+
+  if (sizeRowsBody) {
+    const settings = Store.getSettings();
+    const currentGuide = (settings.sizeGuide && Array.isArray(settings.sizeGuide) && settings.sizeGuide.length > 0)
+      ? settings.sizeGuide
+      : [
+          { size: 'S', weight: '50 - 65 كجم' },
+          { size: 'M', weight: '65 - 75 كجم' },
+          { size: 'L', weight: '75 - 85 كجم' },
+          { size: 'XL', weight: '85 - 95 كجم' },
+          { size: '2XL', weight: '95 - 110 كجم' },
+          { size: '3XL', weight: '110 - 125 كجم' }
+        ];
+
+    currentGuide.forEach(item => {
+      sizeRowsBody.appendChild(createSizeRow(item.size, item.weight));
+    });
+
+    if (addSizeBtn) {
+      addSizeBtn.addEventListener('click', () => {
+        const row = createSizeRow('', '');
+        sizeRowsBody.appendChild(row);
+        row.querySelector('.size-guide-input-size')?.focus();
+      });
+    }
+  }
+
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
       const shippingRates = {};
@@ -2024,6 +2136,15 @@ function attachSettingsListeners() {
         const rate = parseFloat(input.value) || 0;
         if (city) {
           shippingRates[city] = rate;
+        }
+      });
+
+      const sizeGuide = [];
+      document.querySelectorAll('#size-guide-rows-body tr.size-guide-row').forEach(tr => {
+        const s = tr.querySelector('.size-guide-input-size')?.value?.trim();
+        const w = tr.querySelector('.size-guide-input-weight')?.value?.trim();
+        if (s || w) {
+          sizeGuide.push({ size: s || '', weight: w || '' });
         }
       });
 
@@ -2046,6 +2167,12 @@ function attachSettingsListeners() {
         announcementText_en: document.getElementById('set-announcement-en')?.value || '',
         announcementBgColor: document.getElementById('set-announcement-bg')?.value || '#000000',
         announcementTextColor: document.getElementById('set-announcement-text')?.value || '#ffffff',
+
+        sizeGuideActive: document.getElementById('set-size-guide-active')?.checked ?? true,
+        sizeGuideTitle_ar: document.getElementById('set-size-guide-title-ar')?.value?.trim() || 'دليل المقاسات طبقا للوزن',
+        sizeGuideTitle_en: document.getElementById('set-size-guide-title-en')?.value?.trim() || 'Size Guide (By Weight)',
+        sizeGuideTip_ar: document.getElementById('set-size-guide-tip-ar')?.value?.trim() || '',
+        sizeGuide: sizeGuide,
 
         shippingCost: parseFloat(document.getElementById('set-shipping-cost')?.value) || 0,
         freeShippingActive: document.getElementById('set-free-shipping-active')?.checked || false,

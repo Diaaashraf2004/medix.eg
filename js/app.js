@@ -905,8 +905,13 @@ function renderQuickView(productId) {
   `;
 }
 
-function formatCategoryIcon(icon) {
-  if (!icon) return '📦';
+function formatCategoryIcon(icon, catName) {
+  if (!icon) {
+    const name = String(catName || '').toLowerCase();
+    if (name.includes('سكراب') || name.includes('scrub')) return '<i class="ph ph-t-shirt"></i>';
+    if (name.includes('بالطو') || name.includes('coat') || name.includes('lab')) return '<i class="ph ph-first-aid"></i>';
+    return '📦';
+  }
   const str = String(icon).trim();
   if (str.startsWith('http://') || str.startsWith('https://') || str.startsWith('data:image/') || str.startsWith('./') || str.startsWith('/')) {
     return `<img src="${str}" alt="category" class="category-icon-img" loading="lazy">`;
@@ -1021,11 +1026,46 @@ function renderHomePage() {
       `).join('');
   };
 
+  const defaultMedixSlides = [
+    {
+      image: "https://i.postimg.cc/4NYYzXRQ/photo-2026-07-02-17-16-11.jpg",
+      title_ar: "راحة، جودة، وأناقة في اسكراب واحد",
+      title_en: "Comfort, quality, and style all in one scrub",
+      subtitle_ar: "الراحة تبدأ من اختيار الاسكراب المناسب.",
+      subtitle_en: "Comfort starts with choosing the right scrub.",
+      buttonText_ar: "تسوق الآن",
+      buttonText_en: "Shop Now",
+      buttonLink: "#/products",
+      textColor: "#ffaa00",
+      subtitleColor: "#ffffff",
+      buttonBg: "#ffffff",
+      buttonText: "#000000"
+    },
+    {
+      image: "https://i.postimg.cc/sxqGD8tJ/photo-2026-07-05-20-53-03.jpg",
+      title_ar: "خصومات مميزة",
+      title_en: "Special Discounts",
+      subtitle_ar: "راحة، جودة، وأناقة في اسكراب واحد",
+      subtitle_en: "Comfort, quality, and style all in one scrub",
+      buttonText_ar: "تسوق الآن",
+      buttonText_en: "Shop Now",
+      buttonLink: "#/products",
+      textColor: "#ffaa00",
+      subtitleColor: "#ffffff",
+      buttonBg: "#ffffff",
+      buttonText: "#000000"
+    }
+  ];
+
+  const slides = (settings.heroSlider && Array.isArray(settings.heroSlider) && settings.heroSlider.length > 0)
+    ? settings.heroSlider
+    : defaultMedixSlides;
+
   return `
     <div class="hero-carousel" id="hero-slider" data-interval="${settings.sliderInterval || 4}">
-      ${(settings.heroSlider || []).map((slide, i) => `
+      ${slides.map((slide, i) => `
         <div class="carousel-slide ${i === 0 ? 'active' : ''}">
-          <div class="carousel-slide-blur-bg" style="background-image: url('${slide.image || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2070&auto=format&fit=crop'}');"></div>
+          <div class="carousel-slide-blur-bg" style="background-image: url('${slide.image || defaultMedixSlides[0].image}');"></div>
           <div class="carousel-overlay"></div>
           <div class="carousel-slide-inner">
             <div class="carousel-content">
@@ -1034,7 +1074,7 @@ function renderHomePage() {
               ${slide.buttonLink ? `<a href="${escapeHtml(slide.buttonLink)}" class="btn btn-primary btn-lg" style="border-radius:30px !important; background: ${slide.buttonBg || '#c9a04e'} !important; color: ${slide.buttonText || '#0a0a0f'} !important; border: none !important;">${escapeHtml(lang === 'ar' ? slide.buttonText_ar : slide.buttonText_en) || t('hero.shopNow')}</a>` : ''}
             </div>
             <div class="carousel-slide-image-wrap">
-              <img src="${slide.image || 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?q=80&w=2070&auto=format&fit=crop'}" class="carousel-slide-img" alt="">
+              <img src="${slide.image || defaultMedixSlides[0].image}" class="carousel-slide-img" alt="">
             </div>
           </div>
         </div>
@@ -1051,7 +1091,7 @@ function renderHomePage() {
       <div class="categories-grid">
         ${categories.map(cat => `
           <a href="#/category/${cat.id}" class="category-card">
-            <span class="category-icon">${formatCategoryIcon(cat.icon)}</span>
+            <span class="category-icon">${formatCategoryIcon(cat.icon, getCategoryName(cat))}</span>
             <span class="category-name">${escapeHtml(getCategoryName(cat))}</span>
             <span class="category-count">${Store.getProductsByCategory(cat.id).length} ${t('common.products')}</span>
           </a>

@@ -166,52 +166,94 @@ const DEFAULT_SETTINGS = {
   welcomePopupSubtitle_en: 'Use coupon code WELCOME10 to get 10% off on your first order!',
   welcomePopupCoupon: 'WELCOME10',
   welcomePopupImage: 'https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=2070&auto=format&fit=crop',
-  contactPhone: '+20 123 456 7890',
-  contactWhatsapp: '+201234567890',
+  contactPhone: '01557019571',
+  contactWhatsapp: '+201557019571',
   contactEmail: 'info@medix.com',
-  shippingCost: 100,
-  freeShippingActive: true,
+  socialFacebook: 'https://www.facebook.com/profile.php?id=61591348060610',
+  socialInstagram: 'https://www.instagram.com/medix.eg5/',
+  shippingCost: 110,
+  freeShippingActive: false,
   freeShippingThreshold: 500,
   shippingRates: {
-    'القاهرة': 100,
-    'الجيزة': 100,
-    'الإسكندرية': 100,
-    'القليوبية': 100,
-    'الغربية': 100,
-    'المنوفية': 100,
-    'الدقهلية': 100,
-    'الشرقية': 100,
-    'البحيرة': 100,
-    'دمياط': 100,
-    'كفر الشيخ': 100,
-    'بورسعيد': 100,
-    'السويس': 100,
-    'الإسماعيلية': 100,
-    'الفيوم': 100,
-    'بني سويف': 100,
-    'المنيا': 100,
-    'أسيوط': 100,
-    'سوهاج': 100,
-    'قنا': 100,
-    'الأقصر': 100,
-    'أسوان': 100,
-    'البحر الأحمر': 100,
-    'الوادي الجديد': 100,
-    'مطروح': 185,
-    'شمال سيناء': 100,
-    'جنوب سيناء': 175
+    'الغربية': 65,
+    'القاهرة': 110,
+    'الجيزة': 110,
+    'الإسكندرية': 110,
+    'القليوبية': 110,
+    'المنوفية': 110,
+    'الدقهلية': 110,
+    'الشرقية': 110,
+    'البحيرة': 110,
+    'دمياط': 110,
+    'كفر الشيخ': 110,
+    'بورسعيد': 110,
+    'السويس': 110,
+    'الإسماعيلية': 110,
+    'الفيوم': 110,
+    'بني سويف': 110,
+    'المنيا': 110,
+    'أسيوط': 110,
+    'سوهاج': 110,
+    'قنا': 110,
+    'الأقصر': 110,
+    'أسوان': 110,
+    'البحر الأحمر': 110,
+    'الوادي الجديد': 110,
+    'مطروح': 110,
+    'شمال سيناء': 110,
+    'جنوب سيناء': 110
   },
-  aboutText_ar: 'ميدكس - متجرك المفضل للتسوق أونلاين. نقدم لك أفضل المنتجات بأعلى جودة وأفضل الأسعار مع توصيل سريع لجميع أنحاء مصر.',
-  aboutText_en: 'Medix - Your favorite online shopping destination. We offer the best products with highest quality and best prices with fast delivery across Egypt.',
-  address_ar: 'القاهرة، مصر',
-  address_en: 'Cairo, Egypt',
+  aboutText_ar: 'Medix-ميدكس\n - متجرك المفضل للتسوق أونلاين. نقدم لك أفضل المنتجات بأعلى جودة وأفضل الأسعار مع توصيل سريع لجميع أنحاء مصر.',
+  aboutText_en: 'Medix-ميدكس\n  - Your favorite online shopping destination. We offer the best products with highest quality and best prices with fast delivery Egypt.',
+  address_ar: 'طنطا- مصر ',
+  address_en: 'Tanta-Egypt',
   currency_ar: 'ج.م',
   currency_en: 'EGP',
-  emailjs_service_id: '',
-  emailjs_template_id: '',
-  emailjs_public_key: '',
-  sliderInterval: 4, // in seconds
-  heroSlider: [],
+  emailjs_service_id: 'service_vzxl9nt',
+  emailjs_template_id: 'template_yyswrc8',
+  emailjs_public_key: 'jSDRF1NnEfotwWpgC',
+  sliderInterval: 6, // in seconds
+  heroTitleSize: '4rem',
+  heroSubtitleSize: '1.5rem',
+  heroBtnSize: '1.1rem',
+  heroTitleBold: true,
+  heroSubtitleBold: true,
+  heroBtnBold: true,
+  announcementActive: false,
+  announcementText_ar: 'خصم 50% علي كل المنتجات  ',
+  announcementText_en: '50% off on all products',
+  announcementBgColor: '#ff9500',
+  announcementTextColor: '#000000',
+  heroSlider: [
+    {
+      buttonText: "#000000",
+      buttonText_en: "Shop Now",
+      subtitleColor: "#ffffff",
+      textColor: "#ffaa00",
+      title_en: "Comfort, quality, and style all in one scrub",
+      title_ar: "راحة، جودة، وأناقة في اسكراب واحد",
+      image: "https://i.postimg.cc/4NYYzXRQ/photo-2026-07-02-17-16-11.jpg",
+      subtitle_ar: "الراحة تبدأ من اختيار الاسكراب المناسب.",
+      buttonBg: "#ffffff",
+      buttonLink: "#/products",
+      subtitle_en: "Comfort starts with choosing the right scrub.",
+      buttonText_ar: "تسوق الآن"
+    },
+    {
+      textColor: "#ffaa00",
+      title_en: "Special Discounts",
+      buttonText_ar: "تسوق الآن",
+      buttonLink: "#/products",
+      subtitleColor: "#ffffff",
+      buttonText_en: "Shop Now",
+      buttonBg: "#ffffff",
+      buttonText: "#000000",
+      title_ar: "خصومات مميزة",
+      subtitle_en: "Comfort, quality, and style all in one scrub",
+      subtitle_ar: "راحة، جودة، وأناقة في اسكراب واحد",
+      image: "https://i.postimg.cc/sxqGD8tJ/photo-2026-07-05-20-53-03.jpg"
+    }
+  ],
   navBgColor: '#ffffff',
   navTextColor: '#000000',
   btnBgColor: '#000000',
@@ -221,29 +263,93 @@ const DEFAULT_SETTINGS = {
   headingColor: '#000000',
   bodyBgColor: '#ffffff',
   textColor: '#111111',
-  customBanners: [],
+  customBanners: [
+    {
+      active: true,
+      position: 'middle',
+      text_en: 'Special discounts of up to 50% for the grand opening, lasting for two weeks or more',
+      bgColor: '#000000',
+      text_ar: 'خصومات مميزة تصل الي 50%  ممتدة الي اسبوعين او اكثر 😍',
+      textColor: '#f0f0f5',
+      align: 'center',
+      size: 'medium'
+    }
+  ],
   sizeGuideActive: true,
-  sizeGuideTitle_ar: 'دليل المقاسات طبقا للوزن',
-  sizeGuideTitle_en: 'Size Guide (By Weight)',
+  sizeGuideTitle_ar: '📏 دليل المقاسات طبقا للوزن',
+  sizeGuideTitle_en: '📏 Size Guide (By Weight)',
   sizeGuideTip_ar: 'نصيحة: إذا كان وزنك بين مقاسين، ننصح باختيار المقاس الأكبر لحرية وراحة حركة أكبر أثناء ساعات العمل والمناوبات.',
   sizeGuideTip_en: 'Tip: If your weight falls between two sizes, choose the larger size for extra comfort during long shifts.',
   sizeGuide: [
-    { size: 'S', weight: '50 - 65 كجم' },
-    { size: 'M', weight: '65 - 75 كجم' },
-    { size: 'L', weight: '75 - 85 كجم' },
-    { size: 'XL', weight: '85 - 95 كجم' },
-    { size: '2XL', weight: '95 - 110 كجم' },
-    { size: '3XL', weight: '110 - 125 كجم' }
+    { size: 'L', weight: '70- 80 كجم' },
+    { size: 'XL', weight: '80- 90 كجم' },
+    { size: '2XL', weight: '90- 100 كجم' },
+    { size: '3XL', weight: '100- 110 كجم' }
   ]
 };
 
 function getSettings() {
-  return { ...DEFAULT_SETTINGS, ...(getFromStorage(STORAGE_KEYS.settings) || {}) };
+  const stored = getFromStorage(STORAGE_KEYS.settings) || {};
+  const settings = { ...DEFAULT_SETTINGS, ...stored };
+
+  // Guard: If heroSlider is empty or not an array, fall back to DEFAULT_SETTINGS
+  if (!settings.heroSlider || !Array.isArray(settings.heroSlider) || settings.heroSlider.length === 0) {
+    settings.heroSlider = DEFAULT_SETTINGS.heroSlider;
+  }
+
+  // Guard: If customBanners is empty or not an array, fall back to DEFAULT_SETTINGS
+  if (!settings.customBanners || !Array.isArray(settings.customBanners) || settings.customBanners.length === 0) {
+    settings.customBanners = DEFAULT_SETTINGS.customBanners;
+  }
+
+  // Guard: If sizeGuide is empty or not an array, fall back to DEFAULT_SETTINGS
+  if (!settings.sizeGuide || !Array.isArray(settings.sizeGuide) || settings.sizeGuide.length === 0) {
+    settings.sizeGuide = DEFAULT_SETTINGS.sizeGuide;
+  }
+
+  // Guard: Preserve real store contacts if empty or placeholder
+  if (!settings.contactWhatsapp || settings.contactWhatsapp === '+201234567890') {
+    settings.contactWhatsapp = DEFAULT_SETTINGS.contactWhatsapp;
+  }
+  if (!settings.contactPhone || settings.contactPhone === '+20 123 456 7890') {
+    settings.contactPhone = DEFAULT_SETTINGS.contactPhone;
+  }
+  if (!settings.socialFacebook) {
+    settings.socialFacebook = DEFAULT_SETTINGS.socialFacebook;
+  }
+  if (!settings.socialInstagram) {
+    settings.socialInstagram = DEFAULT_SETTINGS.socialInstagram;
+  }
+  if (!settings.emailjs_service_id) {
+    settings.emailjs_service_id = DEFAULT_SETTINGS.emailjs_service_id;
+  }
+  if (!settings.emailjs_template_id) {
+    settings.emailjs_template_id = DEFAULT_SETTINGS.emailjs_template_id;
+  }
+  if (!settings.emailjs_public_key) {
+    settings.emailjs_public_key = DEFAULT_SETTINGS.emailjs_public_key;
+  }
+  if (!settings.announcementText_ar && DEFAULT_SETTINGS.announcementText_ar) {
+    settings.announcementText_ar = DEFAULT_SETTINGS.announcementText_ar;
+  }
+
+  return settings;
 }
 
 function saveSettings(settings) {
   const current = getSettings();
   const updated = { ...current, ...settings };
+
+  // Guard: Preserve heroSlider if settings did not contain a populated slider
+  if ((!updated.heroSlider || updated.heroSlider.length === 0) && (current.heroSlider && current.heroSlider.length > 0)) {
+    updated.heroSlider = current.heroSlider;
+  }
+
+  // Guard: Preserve customBanners if settings did not contain populated banners
+  if ((!updated.customBanners || updated.customBanners.length === 0) && (current.customBanners && current.customBanners.length > 0)) {
+    updated.customBanners = current.customBanners;
+  }
+
   saveToStorage(STORAGE_KEYS.settings, updated);
   emit('settings-updated', updated);
 
@@ -267,9 +373,206 @@ function saveSettings(settings) {
   return updated;
 }
 
+// ===== DEFAULT FALLBACK DATA (Protects against empty cloud sync / offline) =====
+const DEFAULT_CATEGORIES = [
+  {
+    id: "mr8i5gizskep2zsd2",
+    name_ar: "اسكراب",
+    name_en: "Scrubs",
+    icon: "<i class=\"ph ph-t-shirt\"></i>",
+    image: "",
+    order: 0,
+    status: "active"
+  },
+  {
+    id: "mr8i74suj9swg1hgi",
+    name_ar: "بالطو",
+    name_en: "Coats",
+    icon: "<i class=\"ph ph-first-aid\"></i>",
+    image: "",
+    order: 1,
+    status: "active"
+  }
+];
+
+const DEFAULT_PRODUCTS = [
+  {
+    id: "mr3o692kp1xqtwhhk",
+    name_ar: "اسكراب ميدكس  الطبي الازرق",
+    name_en: "Medex Medical Scrub Blue",
+    categoryId: "mr8i5gizskep2zsd2",
+    price: 1200,
+    salePrice: 600,
+    discountPercentage: 50,
+    stock: 9,
+    status: "active",
+    featured: false,
+    showScarcityBadge: true,
+    scarcityThreshold: 2,
+    ratingAvg: 5,
+    ratingCount: 2,
+    sizes: ["L", "XL", "2XL", "3XL"],
+    colors: [{ hex: "#323467", name_en: "blue", name_ar: "ازرق", image: "" }],
+    images: [
+      "https://i.postimg.cc/sxqGD8tJ/photo-2026-07-05-20-53-03.jpg",
+      "https://i.postimg.cc/C5WbwgLW/photo-2026-07-05-20-53-04.jpg"
+    ],
+    description_ar: "اسكراب طبي بخامة مريحة لساعات طويله معالج ضد الوبر او الانكماش بجودة عاليه",
+    description_en: "Medical scrubs made of comfortable material for long hours, treated to resist fuzz and shrinking, with high quality",
+    note_ar: "للحفاظ على جودة الاسكراب: اغسله بماء بارد، وتجنب الكلور",
+    note_en: "To maintain the quality of your scrubs: Wash in cold water and avoid bleach.",
+    linkedProducts: ["mr8gv20ouczqu9iie"],
+    createdAt: "2026-07-02T15:38:54.188Z",
+    updatedAt: "2026-08-01T17:16:10.101Z"
+  },
+  {
+    id: "mr8gv20ouczqu9iie",
+    name_ar: "بالطو ميدكس الطبي",
+    name_en: "Medex medical coat",
+    categoryId: "mr8i74suj9swg1hgi",
+    price: 900,
+    salePrice: 450,
+    discountPercentage: 50,
+    stock: 6,
+    status: "active",
+    featured: false,
+    showScarcityBadge: true,
+    scarcityThreshold: 5,
+    ratingAvg: 0,
+    ratingCount: 0,
+    sizes: ["L", "XL", "2XL", "3XL"],
+    colors: [],
+    images: [
+      "https://i.postimg.cc/SQzrtTs4/Whats-App-Image-2026-07-06-at-2-33-52-AM.jpg"
+    ],
+    description_ar: "اسكراب طبي بخامة مريحة لساعات طويله معالج ضد الوبر او الانكماش بجودة عاليه",
+    description_en: "Comfortable fabric for long hours, treated to resist pilling and shrinkage, with premium quality",
+    note_ar: "للحفاظ على جودة البالطو: اغسله بماء بارد، وتجنب الكلور",
+    note_en: "To maintain the quality of your coat: Wash in cold water and avoid bleach.",
+    linkedProducts: ["mr3o692kp1xqtwhhk", "mr8i32vt6nypoyrbk", "mr8icowkpw3n9z32o"],
+    createdAt: "2026-07-06T00:13:05.400Z",
+    updatedAt: "2026-08-01T17:16:04.783Z"
+  },
+  {
+    id: "mr8i32vt6nypoyrbk",
+    name_ar: "اسكراب ميدكس  الطبي اسود",
+    name_en: "Medix Medical Scrub Black",
+    categoryId: "mr8i5gizskep2zsd2",
+    price: 1200,
+    salePrice: 600,
+    discountPercentage: 50,
+    stock: 8,
+    status: "active",
+    featured: true,
+    showScarcityBadge: true,
+    scarcityThreshold: 5,
+    ratingAvg: 0,
+    ratingCount: 0,
+    sizes: ["L", "XL", "2XL", "3XL"],
+    colors: [{ hex: "#000000", name_ar: "اسود ", image: "", name_en: "Black" }],
+    images: [
+      "https://i.postimg.cc/tJwRfRCt/Whats-App-Image-2026-07-06-at-3-44-53-AM.jpg",
+      "https://i.postimg.cc/3R3kCwdY/Whats-App-Image-2026-07-06-at-1-27-34-AM.jpg"
+    ],
+    description_ar: "اسكراب طبي بخامة مريحة لساعات طويله معالج ضد الوبر او الانكماش بجودة عاليه",
+    description_en: "Medical scrubs made of comfortable material for long hours, treated to resist fuzz and shrinking, with high quality",
+    note_ar: "للحفاظ على جودة الاسكراب: اغسله بماء بارد، وتجنب الكلور",
+    note_en: "To maintain the quality of your scrubs: Wash in cold water and avoid bleach.",
+    linkedProducts: ["mr8gv20ouczqu9iie"],
+    createdAt: "2026-07-06T00:47:19.385Z",
+    updatedAt: "2026-08-09T13:37:10.226Z"
+  },
+  {
+    id: "mr8icowkpw3n9z32o",
+    name_ar: "اسكراب ميدكس  الطبي اخضر غامق",
+    name_en: "Medix Medical Scrub Dark green",
+    categoryId: "mr8i5gizskep2zsd2",
+    price: 1200,
+    salePrice: 600,
+    discountPercentage: 50,
+    stock: 10,
+    status: "active",
+    featured: false,
+    showScarcityBadge: true,
+    scarcityThreshold: 5,
+    ratingAvg: 0,
+    ratingCount: 0,
+    sizes: ["L", "XL", "2XL", "3XL"],
+    colors: [],
+    images: [
+      "https://i.postimg.cc/QMFDLGwP/Whats-App-Image-2026-07-06-at-3-53-20-AM.jpg",
+      "https://i.postimg.cc/J0LCBynQ/Whats-App-Image-2026-07-06-at-3-53-12-AM.jpg"
+    ],
+    description_ar: "اسكراب طبي بخامة مريحة لساعات طويله معالج ضد الوبر او الانكماش بجودة عاليه",
+    description_en: "Medical scrubs made of comfortable material for long hours, treated to resist fuzz and shrinking, with high quality",
+    note_ar: "للحفاظ على جودة الاسكراب: اغسله بماء بارد، وتجنب الكلور",
+    note_en: "To maintain the quality of your scrubs: Wash in cold water and avoid bleach.",
+    linkedProducts: ["mr8gv20ouczqu9iie"],
+    createdAt: "2026-07-06T00:54:47.828Z",
+    updatedAt: "2026-08-01T17:16:18.746Z"
+  },
+  {
+    id: "mslujvsimofw92rl8",
+    name_ar: "اسكراب ميدكس  الطبي اسود",
+    name_en: "Medix Medical Scrub Black",
+    categoryId: "mr8i5gizskep2zsd2",
+    price: 1500,
+    salePrice: 750,
+    discountPercentage: 50,
+    stock: 8,
+    status: "active",
+    featured: true,
+    showScarcityBadge: true,
+    scarcityThreshold: 5,
+    ratingAvg: 0,
+    ratingCount: 0,
+    sizes: ["L", "XL", "2XL", "3XL"],
+    colors: [{ hex: "#000000", name_ar: "اسود ", name_en: "Black", image: "" }],
+    images: [
+      "https://i.postimg.cc/j5BMNtDn/f4526dbb-c2dc-4f6e-87c9-822804677612.png"
+    ],
+    description_ar: "اسكراب طبي بخامة مريحة لساعات طويله معالج ضد الوبر او الانكماش بجودة عاليه",
+    description_en: "Medical scrubs made of comfortable material for long hours, treated to resist fuzz and shrinking, with high quality",
+    note_ar: "للحفاظ على جودة الاسكراب: اغسله بماء بارد، وتجنب الكلور",
+    note_en: "To maintain the quality of your scrubs: Wash in cold water and avoid bleach.",
+    linkedProducts: ["mr8gv20ouczqu9iie"],
+    createdAt: "2026-08-09T13:37:01.362Z",
+    updatedAt: "2026-08-14T13:24:14.305Z"
+  },
+  {
+    id: "mssy1gbjek2l18ts2",
+    name_ar: "اسكراب ميدكس  الطبي اسود  (نسائي )",
+    name_en: "Medical Medix Scrub Black (Women's)",
+    categoryId: "mr8i5gizskep2zsd2",
+    price: 1500,
+    salePrice: 750,
+    discountPercentage: 50,
+    stock: 10,
+    status: "active",
+    featured: true,
+    showScarcityBadge: true,
+    scarcityThreshold: 5,
+    ratingAvg: 0,
+    ratingCount: 0,
+    sizes: ["L", "XL", "2XL", "3XL"],
+    colors: [],
+    images: [
+      "https://i.postimg.cc/2yRhDrSK/New-Project.png"
+    ],
+    description_ar: "اسكراب طبي بخامة مريحة لساعات طويله معالج ضد الوبر او الانكماش بجودة عاليه",
+    description_en: "Medical scrubs made of comfortable material for long hours, treated to resist fuzz and shrinking, with high quality",
+    note_ar: "للحفاظ على جودة الاسكراب: اغسله بماء بارد، وتجنب الكلور",
+    note_en: "To maintain the quality of your scrubs: Wash in cold water and avoid bleach.",
+    linkedProducts: ["mr8gv20ouczqu9iie"],
+    createdAt: "2026-08-14T12:49:03.199Z",
+    updatedAt: "2026-08-14T13:46:46.774Z"
+  }
+];
+
 // ===== PRODUCTS =====
 function getProducts() {
-  return (getFromStorage(STORAGE_KEYS.products) || []).filter(p => p);
+  const products = (getFromStorage(STORAGE_KEYS.products) || []).filter(p => p);
+  return products.length > 0 ? products : DEFAULT_PRODUCTS;
 }
 
 function getActiveProducts() {
@@ -371,7 +674,8 @@ function getProductPrice(product) {
 
 // ===== CATEGORIES =====
 function getCategories() {
-  return (getFromStorage(STORAGE_KEYS.categories) || []).sort((a, b) => (a.order || 0) - (b.order || 0));
+  const categories = (getFromStorage(STORAGE_KEYS.categories) || []).sort((a, b) => (a.order || 0) - (b.order || 0));
+  return categories.length > 0 ? categories : DEFAULT_CATEGORIES;
 }
 
 function getActiveCategories() {
@@ -695,9 +999,31 @@ function getOrderStats() {
   };
 }
 
+const DEFAULT_REVIEWS = [
+  {
+    id: "msaek9q1ub5eg6ush",
+    productId: "mr3o692kp1xqtwhhk",
+    customerName: "د تامر نصر",
+    rating: 5,
+    comment: "خامة جميله جدا وسرعة في التوصيل شكرا",
+    approved: true,
+    createdAt: "2026-08-01T13:23:57.625Z"
+  },
+  {
+    id: "msaekx80udasi40xo",
+    productId: "mr3o692kp1xqtwhhk",
+    customerName: "ام مريم",
+    rating: 5,
+    comment: "ماشاء الله خامة جميله واكيد هطلب ثاني",
+    approved: true,
+    createdAt: "2026-08-01T13:24:28.080Z"
+  }
+];
+
 // ===== REVIEWS =====
 function getReviews(productId) {
-  const reviews = getFromStorage(STORAGE_KEYS.reviews) || [];
+  let reviews = getFromStorage(STORAGE_KEYS.reviews) || [];
+  if (reviews.length === 0) reviews = DEFAULT_REVIEWS;
   return reviews.filter(r => r.productId === productId).sort((a, b) =>
     new Date(b.createdAt) - new Date(a.createdAt)
   );
@@ -708,7 +1034,8 @@ function getApprovedReviews(productId) {
 }
 
 function getAllReviews() {
-  return (getFromStorage(STORAGE_KEYS.reviews) || []).sort((a, b) =>
+  const reviews = getFromStorage(STORAGE_KEYS.reviews) || [];
+  return (reviews.length > 0 ? reviews : DEFAULT_REVIEWS).sort((a, b) =>
     new Date(b.createdAt) - new Date(a.createdAt)
   );
 }
@@ -1039,9 +1366,22 @@ function getCustomerOrders(customerId) {
   return orders.filter(o => o.customerId === customerId).sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 }
 
+const DEFAULT_COUPONS = [
+  {
+    id: "mshdgvb3concflk1y",
+    code: "MEDIX.EG",
+    discountType: "fixed",
+    discountValue: 150,
+    minOrderAmount: 1050,
+    expiryDate: "2026-12-31",
+    status: "active"
+  }
+];
+
 // ===== COUPONS =====
 function getCoupons() {
-  return getFromStorage(STORAGE_KEYS.coupons) || [];
+  const coupons = getFromStorage(STORAGE_KEYS.coupons) || [];
+  return coupons.length > 0 ? coupons : DEFAULT_COUPONS;
 }
 
 function getCoupon(code) {
@@ -1300,9 +1640,23 @@ function initFirebaseSync() {
       const exists = typeof docSnap.exists === 'function' ? docSnap.exists() : docSnap.exists;
       if (exists && docSnap.data()) {
         const raw = docSnap.data();
-        const payload = (raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data) && Object.keys(raw).length === 1)
-          ? raw.data
-          : raw;
+        const nested = (raw.data && typeof raw.data === 'object' && !Array.isArray(raw.data)) ? raw.data : {};
+        
+        // Merge nested legacy data with root data
+        const payload = { ...nested, ...raw };
+        delete payload.data;
+
+        // Restore any populated arrays or strings from nested if raw has empty ones (e.g. heroSlider, customBanners)
+        for (const k in nested) {
+          const rootVal = raw[k];
+          const nestedVal = nested[k];
+          const rootEmpty = rootVal === undefined || rootVal === null || (Array.isArray(rootVal) && rootVal.length === 0) || rootVal === '';
+          const nestedHasData = nestedVal !== undefined && nestedVal !== null && (!Array.isArray(nestedVal) || nestedVal.length > 0) && nestedVal !== '';
+          if (rootEmpty && nestedHasData) {
+            payload[k] = nestedVal;
+          }
+        }
+
         applyLocalData(key, payload);
       }
       checkInitialSync(key);

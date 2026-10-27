@@ -1637,7 +1637,36 @@ function renderDesign() {
           </div>
         </div>
         <div id="slider-settings-container">
-          ${(settings.heroSlider || []).map((slide, i) => `
+          ${((settings.heroSlider && settings.heroSlider.length > 0) ? settings.heroSlider : [
+            {
+              buttonText: "#000000",
+              buttonText_en: "Shop Now",
+              subtitleColor: "#ffffff",
+              textColor: "#ffaa00",
+              title_en: "Comfort, quality, and style all in one scrub",
+              title_ar: "راحة، جودة، وأناقة في اسكراب واحد",
+              image: "https://i.postimg.cc/4NYYzXRQ/photo-2026-07-02-17-16-11.jpg",
+              subtitle_ar: "الراحة تبدأ من اختيار الاسكراب المناسب.",
+              buttonBg: "#ffffff",
+              buttonLink: "#/products",
+              subtitle_en: "Comfort starts with choosing the right scrub.",
+              buttonText_ar: "تسوق الآن"
+            },
+            {
+              textColor: "#ffaa00",
+              title_en: "Special Discounts",
+              buttonText_ar: "تسوق الآن",
+              buttonLink: "#/products",
+              subtitleColor: "#ffffff",
+              buttonText_en: "Shop Now",
+              buttonBg: "#ffffff",
+              buttonText: "#000000",
+              title_ar: "خصومات مميزة",
+              subtitle_en: "Comfort, quality, and style all in one scrub",
+              subtitle_ar: "راحة، جودة، وأناقة في اسكراب واحد",
+              image: "https://i.postimg.cc/sxqGD8tJ/photo-2026-07-05-20-53-03.jpg"
+            }
+          ]).map((slide, i) => `
             <div class="slide-setting-item" style="border: 1px solid var(--border); padding: 15px; margin-bottom: 15px; border-radius: 8px; position:relative;">
               <h5 style="margin-bottom: 10px;">Slide ${i + 1}</h5>
               <button class="btn btn-danger btn-sm" style="position:absolute; top:15px; inset-inline-end:15px; padding:6px 12px;" type="button" data-action="delete-slide">${currentLang === 'ar' ? 'حذف' : 'Delete'}</button>
